@@ -1,0 +1,61 @@
+{
+  "locales": {
+    "en": "Englisch",
+    "es": "Spanisch",
+    "de": "Deutsch",
+    "fr": "Französisch"
+  },
+  "generic": {
+    "or": "oder",
+    "click_select": "Klicken zum Auswählen",
+    "or_drag": " oder ziehen Sie eine Datei/Ordner hierher",
+    "share_mail_subject": "[Shar3]%20Ich%20teile%20einige%20Dateien%20mit%20Ihnen",
+    "share_url": "Hallo!%20Ich%20teile%20einige%20Dateien%20mit%20Ihnen%20über%20die%20Shar3%20App%3A",
+    "navigate_url": "Klicken Sie, um zur URL zu navigieren",
+    "share": "Teilen auf:",
+    "copy_url": "URL kopieren",
+    "copy_image": "Bild kopieren",
+    "qr_copied": {
+      "loading": "QR-Code wird in die Zwischenablage kopiert...",
+      "success": "QR-Code-Bild erfolgreich kopiert!",
+      "error": "QR-Code-Bild konnte nicht kopiert werden. Bitte versuchen Sie es erneut."
+    },
+    "url_copied": {
+      "loading": "URL wird in die Zwischenablage kopiert...",
+      "success": "URL erfolgreich kopiert!",
+      "error": "URL konnte nicht kopiert werden. Bitte versuchen Sie es erneut."
+    },
+    "stop_share": "Teilen stoppen"
+  },
+  "contextmenu": {
+    "reshare": "Erneut teilen",
+    "open_folder": "Ordner öffnen",
+    "delete_entry": "Aus Verlauf löschen"
+  },
+  "nav": {
+    "report_bug": "Fehler melden",
+    "new_item": "Neu hochladen",
+    "settings": "Einstellungen"
+  },
+  "toasts": {
+    "no_connection": "Keine Netzwerkverbindung, Sie können keine Dateien teilen",
+    "delete_entry": "Verlaufs Eintrag gelöscht für '__filename__'"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "general_settings": "Allgemeine Einstellungen",
+    "public_share": "Öffentliches Teilen",
+    "public_share_tooltip": "Wenn aktiviert, werden Dateien über eine öffentliche URL außerhalb Ihres lokalen Netzwerks geteilt, nützlich, wenn Sie Dinge mit Ihren Freunden teilen möchten ✨",
+    "dark_theme": "Dunkles Thema",
+    "auth": "Authentifizierungsdaten",
+    "clean_history": "Verlauf löschen",
+    "clean_history_success": "Verlauf wurde gelöscht",
+    "clean_history_confirm": "Drücken Sie die Schaltfläche erneut, um die Aktion zu bestätigen",
+    "auth_username": "Benutzername",
+    "auth_password": "Passwort",
+    "auth_warning": "Sie müssen sowohl Benutzernamen als auch Passwort hinzufügen, damit die Authentifizierung aktiviert wird",
+    "other_settings": "Weitere Einstellungen",
+    "shortcuts": "Kurzbefehle",
+    "language": "Sprache"
+  }
+}
