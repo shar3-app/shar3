@@ -37,7 +37,16 @@ function App() {
         />
       </nav>
       <main className="space-y-6 pb-20">
-        <Dropzone setHistory={setHistory} T={T} isConnected={isConnected} />
+        <section className="flex gap-6">
+          <Dropzone setHistory={setHistory} T={T} isConnected={isConnected} />
+          <Dropzone
+            setHistory={setHistory}
+            T={T}
+            isConnected={isConnected}
+            isDirectory={false}
+          />
+        </section>
+
         {!!history?.length && (
           <HistoryTable
             history={history}

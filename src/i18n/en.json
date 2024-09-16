@@ -7,8 +7,11 @@
   },
   "generic": {
     "or": "or",
-    "click_select": "Click to select",
-    "or_drag": " or drag a file/folder here",
+    "click_select": "Click or drag",
+    "or_drag": {
+      "directory": " to share a folder",
+      "file": " to share a file"
+    },
     "share_mail_subject": "[Shar3]%20I%20am%20sharing%20with%20you%20some%20files",
     "share_url": "Hey!%20I%20am%20sharing%20with%20you%20some%20files%using%20Shar3%20app%3A",
     "navigate_url": "Click to navigate to url",

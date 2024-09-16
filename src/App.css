@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+::selection {
+    display: none;
+}
+
 html {
     overflow-x: hidden;
     width: 100vw;

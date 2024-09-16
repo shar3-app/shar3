@@ -1,6 +1,8 @@
 import { useLocalStorage } from "@hooks";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
 import { History, Settings, Translator } from "@shared";
+import { open } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api/tauri";
 import { noConnectionError } from "@utils";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import DropdownPlaceholder from "./Placeholder";
@@ -10,6 +12,7 @@ interface DropzoneProps {
   setHistory: Dispatch<SetStateAction<History>>;
   isConnected: boolean;
   T: Translator;
+  isDirectory?: boolean;
 }
 
 const defaultStyles =
@@ -17,7 +20,12 @@ const defaultStyles =
 const sharedStyles =
   "border-2 border-gray-300 border-dashed dark:border-gray-600 bg-gray-50 dark:bg-gray-800";
 
-const Dropzone = ({ setHistory, isConnected, T }: DropzoneProps) => {
+const Dropzone = ({
+  setHistory,
+  isConnected,
+  T,
+  isDirectory = true,
+}: DropzoneProps) => {
   const [shared, setShared] = useState<string | null>(null);
   const { getValue: getSettings } = useLocalStorage<Settings | null>(
     "settings",
@@ -64,9 +72,13 @@ const Dropzone = ({ setHistory, isConnected, T }: DropzoneProps) => {
     //ipcRenderer.invoke(ShareEvents.StopSharing);
   };
 
-  const openExplorer = () => {
+  const openExplorer = async () => {
     if (checkConnection()) {
-      //ipcRenderer.invoke(ShareEvents.OpenExplorer);
+      const selected = await open({
+        multiple: false,
+        directory: isDirectory,
+      });
+      invoke("serve", { path: selected }).then(() => console.log("Completed!"));
     }
   };
 
@@ -75,11 +87,14 @@ const Dropzone = ({ setHistory, isConnected, T }: DropzoneProps) => {
     openExplorer();
   };
 
-  useHotkeys(["Control+u", "Meta+u"], () => {
-    if (getSettings()?.shortcuts !== false) {
-      openExplorer();
-    }
-  });
+  useHotkeys(
+    isDirectory ? ["Control+d", "Meta+d"] : ["Control+f", "Meta+f"],
+    () => {
+      if (getSettings()?.shortcuts !== false) {
+        openExplorer();
+      }
+    },
+  );
 
   const onShare = (_, path: any) => {
     if (!path.canceled && path.filePaths?.length && checkConnection()) {
@@ -116,7 +131,7 @@ const Dropzone = ({ setHistory, isConnected, T }: DropzoneProps) => {
 
   return (
     <div
-      className={`relative flex items-center justify-center w-full rounded-lg transition-all h-[50vw] ${!shared ? defaultStyles : sharedStyles}`}
+      className={`relative flex items-center justify-center w-full rounded-lg transition-all h-[35vh] ${!shared ? defaultStyles : sharedStyles}`}
     >
       {!shared ? (
         <label
@@ -127,7 +142,11 @@ const Dropzone = ({ setHistory, isConnected, T }: DropzoneProps) => {
           htmlFor="dropzone-file"
           className="relative flex flex-col items-center px-4 justify-center w-full h-full cursor-pointer"
         >
-          <DropdownPlaceholder getSettings={getSettings} T={T} />
+          <DropdownPlaceholder
+            getSettings={getSettings}
+            T={T}
+            isDirectory={isDirectory}
+          />
           <input
             id="dropzone-file"
             tabIndex={-1}
