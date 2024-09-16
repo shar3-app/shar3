@@ -6,7 +6,7 @@ module.exports = {
   content: [
     resolve(__dirname, "./**/*.rs"),
     resolve(__dirname, "./src/**/*.{js,ts,jsx,tsx,html,astro}"),
-    resolve(__dirname, "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}"),
+    resolve(__dirname, "./node_modules/flowbite-react/**/*.{cjs,js}"),
   ],
   theme: {
     extend: {

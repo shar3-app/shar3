@@ -38,7 +38,7 @@ function App() {
       </nav>
       <main className="space-y-6 pb-20">
         <Dropzone setHistory={setHistory} T={T} isConnected={isConnected} />
-        {history?.length && (
+        {!!history?.length && (
           <HistoryTable
             history={history}
             locale={locale as Locale}
