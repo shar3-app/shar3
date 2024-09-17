@@ -78,7 +78,7 @@ const Dropzone = ({
         multiple: false,
         directory: isDirectory,
       });
-      invoke("serve", { path: selected }).then(() => console.log("Completed!"));
+      invoke("serve", { path: selected }).then((url) => alert(url));
     }
   };
 

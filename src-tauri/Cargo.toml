@@ -18,6 +18,9 @@ dufs = "0.42.0"
 warp = "0.3.7"
 tokio = "1.40.0"
 chrono = "0.4.38"
+lazy_static = "1.5.0"
+base64 = "0.22.1"
+cmd_lib = "1.9.4"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
