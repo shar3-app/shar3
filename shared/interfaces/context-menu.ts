@@ -1,11 +1,11 @@
 export interface ContextMenuCoords {
-    x: number
-    y: number
+  x: number;
+  y: number;
 }
 
 export interface ContextMenuItem {
-    label: string
-    action: () => void
+  label: string;
+  action: () => void;
 }
 
-export type ContextMenuItems = ContextMenuItem[]
+export type ContextMenuItems = ContextMenuItem[];

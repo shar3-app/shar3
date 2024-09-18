@@ -1,7 +1,7 @@
-export type History = HistoryItem[]
+export type History = HistoryItem[];
 
 export interface HistoryItem {
-    path: string
-    isDirectory: boolean
-    sharedAt: number
+  path: string;
+  isDirectory: boolean;
+  sharedAt: number;
 }

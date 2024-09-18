@@ -1,5 +1,7 @@
+import { open } from "@tauri-apps/api/shell";
+
 const Link = ({ children, href, className, ...props }: any) => {
-  const onHref = () => null; //ipcRenderer.invoke('open-link', href)
+  const onHref = () => open(href);
 
   return (
     <a

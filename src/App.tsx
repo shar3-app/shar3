@@ -1,9 +1,9 @@
 import ContextMenu from "@components/ContextMenu";
-import Dropzone from "@components/Dropzone";
 import HistoryTable from "@components/HistoryTable";
 import Loader from "@components/Loader";
 import Nav from "@components/Nav";
 import SettingsModal from "@components/Settings";
+import Share from "@components/Share";
 import { useConnection, useLocalStorage } from "@hooks";
 import { History, Locale } from "@shared";
 import { toggleScroll } from "@utils";
@@ -37,15 +37,7 @@ function App() {
         />
       </nav>
       <main className="space-y-6 pb-20">
-        <section className="flex gap-6">
-          <Dropzone setHistory={setHistory} T={T} isConnected={isConnected} />
-          <Dropzone
-            setHistory={setHistory}
-            T={T}
-            isConnected={isConnected}
-            isDirectory={false}
-          />
-        </section>
+        <Share setHistory={setHistory} T={T} isConnected={isConnected} />
 
         {!!history?.length && (
           <HistoryTable

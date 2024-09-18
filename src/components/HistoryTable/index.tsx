@@ -2,6 +2,7 @@ import { openContextMenu } from "@components/ContextMenu";
 import { useRerenderer } from "@hooks";
 import { FileIcon, FolderIcon } from "@icons";
 import { History, HistoryItem, Locale, Translator } from "@shared";
+import { open } from "@tauri-apps/api/shell";
 import { from, isWindows } from "@utils";
 import { Dispatch, MouseEvent as ME, SetStateAction, useState } from "react";
 import { toast } from "sonner";
@@ -24,7 +25,7 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
   const getFolderName = (path: string) =>
     path.slice(path.lastIndexOf(pathSlash) + 1);
 
-  const shareHistoryItem = (item: HistoryItem) => {
+  const shareHistoryItem = (_: HistoryItem) => {
     //ipcRenderer.emit(LoaderState.Loading);
     //ipcRenderer.invoke(ShareEvents.ShareDirectory, item.path);
   };
@@ -48,6 +49,7 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
     e: ME<HTMLLIElement, MouseEvent>,
     historyItem: HistoryItem,
   ): void => {
+    e.preventDefault();
     openContextMenu(
       {
         x: e.clientX,
@@ -60,7 +62,7 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
         },
         {
           label: T("contextmenu.open_folder"),
-          action: () => openFolder(historyItem.path),
+          action: () => open(historyItem.path),
         },
         {
           label: T("contextmenu.delete_entry"),
@@ -68,10 +70,6 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
         },
       ],
     );
-  };
-
-  const openFolder = (path: string): void => {
-    //ipcRenderer.invoke(ShareEvents.OpenFolder, path);
   };
 
   // Rerenderer (10 secs)
@@ -86,7 +84,7 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
               key={idx}
               tabIndex={1}
               className={idx % 2 ? oddClasses : evenClasses}
-              onClick={(e) => shareHistoryItem(historyItem)}
+              onClick={() => shareHistoryItem(historyItem)}
               onKeyDown={(event) => {
                 if (["Enter", "Space"].includes(event?.code))
                   shareHistoryItem(historyItem);

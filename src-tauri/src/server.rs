@@ -10,11 +10,9 @@ use std::path::{Path, PathBuf};
 use warp::hyper::Body;
 
 pub async fn run_server(path: String) -> Result<(), warp::Rejection> {
-    let path_clone = path.clone();
-
     let static_files = warp::path::tail()
         .and_then(move |tail: warp::path::Tail| {
-            let path_for_closure = path_clone.clone();
+            let path_for_closure = path.clone();
             async move {
                 // Convert the tail into a string and append it to the base path.
                 let mut full_path = PathBuf::from(&path_for_closure);

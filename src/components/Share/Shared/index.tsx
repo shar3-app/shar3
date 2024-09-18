@@ -3,6 +3,7 @@ import Link from "@components/Link";
 import { useTheme } from "@hooks";
 import { EmailIcon, TelegramIcon, WhatsappIcon } from "@icons";
 import { Translator } from "@shared";
+import { open } from "@tauri-apps/api/shell";
 import { copyQrToClipboard, copyURLToClipboard } from "@utils";
 import { Tooltip } from "flowbite-react";
 import QRCode from "react-qr-code";
@@ -42,8 +43,8 @@ const Shared = ({ shared, onStop, T }: SharedProps) => {
             value={shared ?? ""}
             size={1024}
             bgColor={"transparent"}
-            className="w-full h-full rounded-md cursor-pointer"
-            onClick={() => null} //ipcRenderer.invoke("open-link", shared)}
+            className="w-full h-full rounded-md cursor-pointer max-w-full"
+            onClick={() => open(shared)}
             fgColor={theme() === "dark" ? "#b6c0ce" : "#3a4049"}
           />
         </Tooltip>

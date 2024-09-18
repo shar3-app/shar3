@@ -1,3 +1,5 @@
+import { LoaderState } from "@shared";
+import { listen } from "@tauri-apps/api/event";
 import { useEffect, useState } from "react";
 import "./loader.css";
 
@@ -5,7 +7,6 @@ const Loader = () => {
   const [loading, setLoading] = useState<boolean>(false);
   //const {theme} = useTheme();
 
-  // const toggleLoader = (_: any, state: boolean) => setLoading(state)
   const startLoading = () => {
     document.documentElement.style.overflowY = "hidden";
     setLoading(true);
@@ -16,14 +17,14 @@ const Loader = () => {
   };
 
   useEffect(() => {
-    // ipcRenderer.on(LoaderState.Loader, toggleLoader)
-    //ipcRenderer.on(LoaderState.Loading, startLoading)
-    //ipcRenderer.on(LoaderState.StopLoading, stopLoading)
+    const listenStartLoader = listen(LoaderState.Loading, () => startLoading());
+    const listenStopLoader = listen(LoaderState.StopLoading, () =>
+      stopLoading(),
+    );
 
     return () => {
-      // ipcRenderer.off(LoaderState.Loader, toggleLoader)
-      //ipcRenderer.off(LoaderState.Loading, startLoading)
-      //ipcRenderer.off(LoaderState.StopLoading, stopLoading)
+      listenStartLoader.then((f) => f());
+      listenStopLoader.then((f) => f());
     };
   }, []);
 
