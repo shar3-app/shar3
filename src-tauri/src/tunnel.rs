@@ -26,6 +26,8 @@ pub fn start_tunnel(port: u16) -> Result<String, io::Error> {
     // Ensure initialization happens only once
     INIT.call_once(|| {
         let mut child = Command::new("ssh")
+            .arg("-o")
+            .arg("StrictHostKeyChecking=no")
             .arg("-T")
             .arg("-R")
             .arg(format!("80:localhost:{}", port))
