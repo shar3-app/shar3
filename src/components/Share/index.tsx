@@ -1,5 +1,6 @@
 import { useLocalStorage } from "@hooks";
 import {
+  Events,
   History,
   LoaderState,
   Settings,
@@ -7,11 +8,11 @@ import {
   Translator,
 } from "@shared";
 import { open } from "@tauri-apps/api/dialog";
-import { emit } from "@tauri-apps/api/event";
+import { emit, listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
 import { noConnectionError } from "@utils";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Dropzone from "./Dropzone";
 import Shared from "./Shared";
 
@@ -25,8 +26,22 @@ const Share = ({ setHistory, isConnected, T }: ShareProps) => {
   const [shared, setShared] = useState<string | null>(null);
   const { getValue: getSettings } = useLocalStorage<Settings | null>(
     "settings",
-    null,
   );
+
+  useEffect(() => {
+    const listenShare = listen<string>(Events.Share, ({ payload }) =>
+      serve(payload),
+    );
+    const listenDrop = listen<string>(
+      "tauri://file-drop",
+      ({ payload: [path] }) => appWindow.setFocus().then(() => serve(path)),
+    );
+
+    return () => {
+      listenShare.then((f) => f());
+      listenDrop.then((f) => f());
+    };
+  }, []);
 
   const checkConnection = (): boolean => {
     if (!isConnected) {
@@ -67,9 +82,13 @@ const Share = ({ setHistory, isConnected, T }: ShareProps) => {
           setShared(null);
         } else {
           // TODO error
+          alert("error");
         }
       })
-      // TODO catch and stop loader
+      .catch(() => {
+        alert("error");
+        // TODO catch and stop loader
+      })
       .finally(() => setLoading(false));
   };
 
@@ -87,7 +106,10 @@ const Share = ({ setHistory, isConnected, T }: ShareProps) => {
   const serve = (path: string | null) => {
     if (path) {
       setLoading();
-      invoke<SharePayload>("serve", { path, window: appWindow })
+      invoke<SharePayload>("serve", {
+        path,
+        isPublic: getSettings()?.publicShare,
+      })
         .then((payload) => {
           updateSharedUrl(payload);
         })
@@ -111,33 +133,18 @@ const Share = ({ setHistory, isConnected, T }: ShareProps) => {
     emit(state ? LoaderState.Loading : LoaderState.StopLoading);
   };
 
-  // TODO check not working
-  const onDrop = (files: FileList | null) => {
-    if (files?.length) {
-      setLoading();
-      //serve(files[0].path);
-    } else {
-      setLoading(false);
-      // TODO path upload error
-    }
-  };
-
   return !shared ? (
     <div className="flex gap-6">
       <Dropzone
         T={T}
-        getSettings={getSettings}
         openExplorer={openExplorer}
         checkConnection={checkConnection}
-        onDrop={onDrop}
       />
       <Dropzone
         T={T}
         isDirectory={false}
-        getSettings={getSettings}
         openExplorer={openExplorer}
         checkConnection={checkConnection}
-        onDrop={onDrop}
       />
     </div>
   ) : (

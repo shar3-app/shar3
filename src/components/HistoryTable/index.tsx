@@ -1,9 +1,10 @@
 import { openContextMenu } from "@components/ContextMenu";
-import { useRerenderer } from "@hooks";
+import { useOsType, useRerenderer } from "@hooks";
 import { FileIcon, FolderIcon } from "@icons";
-import { History, HistoryItem, Locale, Translator } from "@shared";
-import { open } from "@tauri-apps/api/shell";
-import { from, isWindows } from "@utils";
+import { Events, History, HistoryItem, Locale, Translator } from "@shared";
+import { emit } from "@tauri-apps/api/event";
+import { invoke } from "@tauri-apps/api/tauri";
+import { from } from "@utils";
 import { Dispatch, MouseEvent as ME, SetStateAction, useState } from "react";
 import { toast } from "sonner";
 
@@ -18,16 +19,19 @@ const evenClasses =
   "flex py-[1.15rem] border-b bg-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer first:rounded-t-md last:rounded-b-md";
 const oddClasses =
   "flex py-[1.15rem] bg-white bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer last:rounded-b-md";
-const pathSlash = isWindows() ? "\\" : "/";
 
 const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
   const [visibleItems, setVisibleItems] = useState(5);
-  const getFolderName = (path: string) =>
-    path.slice(path.lastIndexOf(pathSlash) + 1);
+  const osType = useOsType();
 
-  const shareHistoryItem = (_: HistoryItem) => {
-    //ipcRenderer.emit(LoaderState.Loading);
-    //ipcRenderer.invoke(ShareEvents.ShareDirectory, item.path);
+  // Rerenderer (10 secs)
+  useRerenderer();
+
+  const getFolderName = (path: string) =>
+    path.slice(path.lastIndexOf(osType === "Windows_NT" ? "\\" : "/") + 1);
+
+  const shareHistoryItem = (item: HistoryItem) => {
+    emit(Events.Share, item.path);
   };
 
   const loadMore = (): void => {
@@ -62,7 +66,7 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
         },
         {
           label: T("contextmenu.open_folder"),
-          action: () => open(historyItem.path),
+          action: () => invoke("open", { path: historyItem.path, osType }),
         },
         {
           label: T("contextmenu.delete_entry"),
@@ -71,9 +75,6 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
       ],
     );
   };
-
-  // Rerenderer (10 secs)
-  useRerenderer();
 
   return (
     <div className="rounded-lg border-2 border-gray-200 dark:border-gray-700">
@@ -107,7 +108,7 @@ const HistoryTable = ({ history, locale, setHistory, T }: HistoryProps) => {
                     {getFolderName(historyItem.path)}
                   </p>
                   <span className="text-[.65rem] font-light whitespace-nowrap overflow-hidden text-ellipsis text-left rtl">
-                    {isWindows()
+                    {osType === "Windows_NT"
                       ? historyItem.path
                       : historyItem.path.replace("/", "")}
                   </span>

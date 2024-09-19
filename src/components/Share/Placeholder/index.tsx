@@ -1,7 +1,7 @@
 import Kbd from "@components/Kbd";
+import { useOsType } from "@hooks";
 import { FileIcon, FolderIcon } from "@icons";
 import { Settings, Translator } from "@shared";
-import { isMac } from "@utils";
 
 interface DropdownPlaceholderProps {
   getSettings: () => Settings | null;
@@ -14,6 +14,8 @@ const DropdownPlaceholder = ({
   T,
   isDirectory,
 }: DropdownPlaceholderProps) => {
+  const osType = useOsType();
+
   return (
     <div className="flex flex-col items-center justify-center">
       {isDirectory ? (
@@ -28,7 +30,7 @@ const DropdownPlaceholder = ({
       {getSettings()?.shortcuts !== false ? (
         <p className="text-center mt-4">
           <span className="text-gray-500 dark:text-gray-400">
-            {isMac() ? (
+            {osType === "Darwin" ? (
               <>
                 <Kbd>Cmd</Kbd> + <Kbd>{isDirectory ? "D" : "F"}</Kbd>
               </>

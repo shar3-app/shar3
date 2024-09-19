@@ -18,7 +18,7 @@ fn extract_url(line: &str) -> Option<String> {
     None
 }
 
-pub fn start_tunnel() -> Result<String, io::Error> {
+pub fn start_tunnel(port: u16) -> Result<String, io::Error> {
     // Create a channel to communicate the URL
     let (tx, rx) = mpsc::channel();
 
@@ -26,7 +26,7 @@ pub fn start_tunnel() -> Result<String, io::Error> {
     INIT.call_once(|| {
         let mut child = Command::new("ssh")
             .arg("-R")
-            .arg("80:localhost:1234")
+            .arg(format!("80:localhost:{}", port))
             .arg("serveo.net")
             .stdout(Stdio::piped()) // Capture the stdout
             .spawn()

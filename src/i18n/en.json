@@ -36,8 +36,8 @@
     "delete_entry": "Delete from history"
   },
   "nav": {
-    "report_bug": "Report bug",
-    "new_item": "Upload new",
+    "report_bug": "Report an issue",
+    "support": "Support me",
     "settings": "Settings"
   },
   "toasts": {
@@ -50,8 +50,8 @@
     "public_share": "Public share",
     "public_share_tooltip": "When enabled files will be shared outside of your local network using a public url, useful if you want to share things with your friends ✨",
     "dark_theme": "Dark theme",
-    "auth": "Auth credentials",
-    "clean_history": "Clean history",
+    "auth": "Use auth credentials",
+    "clean_history": "Clear history",
     "clean_history_success": "History has been cleared",
     "clean_history_confirm": "Press the button again to confirm the action",
     "auth_username": "User name",

@@ -5,8 +5,9 @@ mod server;
 mod tunnel;
 
 use std::path::Path;
+use std::process::Command;
 
-use server::run_server;
+use server::{get_available_port, run_server};
 use tunnel::{kill_tunnel, start_tunnel};
 use serde::Serialize;
 use tracing::{debug, error, info, Level};
@@ -43,6 +44,21 @@ struct SharedPayload {
 }
 
 #[tauri::command]
+fn open(path: String, os_type: String) {
+    if os_type == "Windows_NT" {
+        Command::new("explorer")
+            .args(["/select,", &path])
+            .spawn()
+            .unwrap();
+    } else {
+        Command::new( "open" )
+            .args(["-R", &path])
+            .spawn()
+            .unwrap();
+    }
+}
+
+#[tauri::command]
 fn log(text: String) {
     debug!("[FE LOG]: {}", text);
 }
@@ -63,16 +79,19 @@ async fn stop() -> Result<bool, bool> {
 }
 
 #[tauri::command]
-async fn serve(path: String) -> Result<SharedPayload, ()> {
+async fn serve(path: String, is_public: bool) -> Result<SharedPayload, ()> {
+    let _ = stop().await;
     let success = Arc::new(Mutex::new(true));
     let path_str = path.clone(); // Clone path_str to avoid moving
+    let port: u16 = get_available_port().unwrap_or(8765);
 
     // Spawn the server task and store it globally
     let success_clone = Arc::clone(&success);
     let server_task = tokio::spawn({
-        let path_str = path_str.clone(); // Clone for use in the async block
+        let port = port.clone(); // Clone for use in the async block
+        let path_str = path_str.clone();
         async move {
-            if let Err(e) = run_server(path_str).await {
+            if let Err(e) = run_server(path_str, port).await {
                 let mut success = success_clone.lock().await;
                 *success = false;
                 error!("Error running server: {:?}", e);
@@ -85,7 +104,7 @@ async fn serve(path: String) -> Result<SharedPayload, ()> {
         *server_task_lock = Some(server_task);
     }
 
-    let mut url = String::new();
+    let mut url = String::from(format!("http://localhost:{}", port));
 
     // Compute whether it's a directory before moving `path_str`
     let is_directory = Path::new(&path_str).is_dir();
@@ -93,8 +112,8 @@ async fn serve(path: String) -> Result<SharedPayload, ()> {
     let success = *success.lock().await;
     let mut final_success = success;
 
-    if success {
-        match start_tunnel() {
+    if success && is_public {
+        match start_tunnel(port) {
             Ok(result) => {
                 info!("Started tunnel correctly");
                 url = result;
@@ -124,7 +143,7 @@ fn main() {
         .expect("Failed to set global default subscriber");
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![log, stop, serve])
+        .invoke_handler(tauri::generate_handler![log, stop, serve, open])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,3 +1,4 @@
+import { useLocalStorage } from "@hooks";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
 import { LoaderState, Settings, Translator } from "@shared";
 import { emit } from "@tauri-apps/api/event";
@@ -5,21 +6,21 @@ import DropdownPlaceholder from "../Placeholder";
 
 interface DropzoneProps {
   T: Translator;
-  getSettings: () => Settings | null;
   isDirectory?: boolean;
   openExplorer: (isDirectory: boolean) => Promise<void>;
   checkConnection: () => boolean;
-  onDrop: (files: FileList | null) => void;
 }
 
 const Dropzone = ({
   T,
   isDirectory = true,
-  getSettings,
   openExplorer,
   checkConnection,
-  onDrop,
 }: DropzoneProps) => {
+  const { getValue: getSettings } = useLocalStorage<Settings | null>(
+    "settings",
+  );
+
   useHotkeys(
     isDirectory ? ["Control+d", "Meta+d"] : ["Control+f", "Meta+f"],
     () => {

@@ -5,7 +5,6 @@ import "./loader.css";
 
 const Loader = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  //const {theme} = useTheme();
 
   const startLoading = () => {
     document.documentElement.style.overflowY = "hidden";

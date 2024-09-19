@@ -1,54 +1,47 @@
-import { BugIcon, PlusIcon, SettingsIcon } from "@icons";
+import { BugIcon, DonateIcon, SettingsIcon } from "@icons";
 import { Translator } from "@shared";
-import { noConnectionError } from "@utils";
-import { Tooltip } from "flowbite-react";
+import { open } from "@tauri-apps/api/shell";
 import NavItem from "./NavItem";
 
 interface NavProps {
-    toggleSettings: (state: boolean) => void
-    T: Translator
-    isConnected: boolean
+  toggleSettings: (state: boolean) => void;
+  T: Translator;
+  isConnected: boolean;
 }
 
-const Nav = ({toggleSettings, T, isConnected}: NavProps) => {
-    const openExplorer = (): void => {
-        if (isConnected) {
-            //ipcRenderer.invoke(ShareEvents.OpenExplorer)
-        } else {
-            noConnectionError(T)
-        }
-    }
+const Nav = ({ toggleSettings, T }: NavProps) => {
+  return (
+    <div className="fixed z-50 w-56 max-w-[90%] h-16 shadow-md -translate-x-1/2 bg-primary rounded-full bottom-6 left-[50vw]">
+      <div className="flex justify-around items-center h-full w-full px-2">
+        <NavItem
+          key={"nav-bug"}
+          title={T("nav.report_bug")}
+          icon={
+            <BugIcon className="w-7 h-7 text-white group-hover:text-slate-300" />
+          }
+          onClick={() => open("https://github.com/shar3-app/shar3/issues/new")}
+        />
 
-    const reportBug = () => null //ipcRenderer.invoke(ShareEvents.ReportBug)
+        <NavItem
+          key={"nav-support"}
+          title={T("nav.support")}
+          icon={
+            <DonateIcon className="w-7 h-7 text-white group-hover:text-slate-300" />
+          }
+          onClick={() => open("https://buymeacoffee.com/davru")}
+        />
 
-    return (
-        <div className="fixed z-50 w-72 max-w-[90%] h-16 shadow-md -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-[50vw] dark:bg-gray-700 dark:border-gray-600">
-            <div className="grid h-full max-w-lg grid-cols-3 mx-auto">
-                <NavItem
-                    key={'nav-bug'}
-                    title={T('nav.report_bug')}
-                    icon={<BugIcon className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-primary"/>}
-                    onClick={reportBug}
-                />
-
-                <div className="flex items-center justify-center">
-                    <Tooltip content={T('nav.new_item')} arrow={false} className="!-top-10">
-                        <button type="button" onClick={openExplorer} className="inline-flex items-center justify-center w-11 h-11 font-medium bg-primary rounded-full hover:bg-primaryHover group">
-                            <PlusIcon/>
-                            <span className="sr-only">{T('nav.new_item')}</span>
-                        </button>
-                    </Tooltip>
-                </div>
-
-                <NavItem
-                    key={'nav-settings'}
-                    title={T('nav.settings')}
-                    icon={<SettingsIcon className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-primary"/>}
-                    onClick={() => toggleSettings(true)}
-                />
-            </div>
-        </div>
-    );
-}
+        <NavItem
+          key={"nav-settings"}
+          title={T("nav.settings")}
+          icon={
+            <SettingsIcon className="w-7 h-7 text-white group-hover:text-slate-300" />
+          }
+          onClick={() => toggleSettings(true)}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default Nav;

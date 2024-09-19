@@ -6,10 +6,22 @@ use serving::{serve_image, serve_listing, serve_pdf};
 use utils::remove_last_char;
 use warp::Filter;
 use warp::http::Response;
-use std::path::{Path, PathBuf};
+use std::{net::TcpListener, path::{Path, PathBuf}};
 use warp::hyper::Body;
 
-pub async fn run_server(path: String) -> Result<(), warp::Rejection> {
+pub fn get_available_port() -> Option<u16> {
+    (8000..9000)
+        .find(|port| port_is_available(*port))
+}
+
+fn port_is_available(port: u16) -> bool {
+    match TcpListener::bind(("127.0.0.1", port)) {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+
+pub async fn run_server(path: String, port: u16) -> Result<(), warp::Rejection> {
     let static_files = warp::path::tail()
         .and_then(move |tail: warp::path::Tail| {
             let path_for_closure = path.clone();
@@ -27,7 +39,7 @@ pub async fn run_server(path: String) -> Result<(), warp::Rejection> {
             }
         });
 
-    warp::serve(static_files).run(([127, 0, 0, 1], 1234)).await;
+    warp::serve(static_files).run(([127, 0, 0, 1], port)).await;
 
     Ok(())
 }
