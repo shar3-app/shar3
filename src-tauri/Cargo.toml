@@ -23,6 +23,8 @@ base64 = "0.22.1"
 cmd_lib = "1.9.4"
 tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
+rand = "0.8.5"
+get_if_addrs = "0.5.3"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

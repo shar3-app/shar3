@@ -8,17 +8,38 @@ use warp::Filter;
 use warp::http::Response;
 use std::{net::TcpListener, path::{Path, PathBuf}};
 use warp::hyper::Body;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
+use get_if_addrs::get_if_addrs;
+use std::net::IpAddr;
+
+pub fn get_local_ip() -> Option<IpAddr> {
+    if let Ok(interfaces) = get_if_addrs() {
+        for iface in interfaces {
+            if !iface.is_loopback() {
+                if let IpAddr::V4(ipv4) = iface.ip() {
+                    return Some(IpAddr::V4(ipv4));
+                }
+            }
+        }
+    }
+    None
+}
 
 pub fn get_available_port() -> Option<u16> {
-    (8000..9000)
-        .find(|port| port_is_available(*port))
+    // Create a vector of ports in the range
+    let mut ports: Vec<u16> = (8000..9000).collect();
+
+    // Shuffle the ports randomly
+    let mut rng = thread_rng();
+    ports.shuffle(&mut rng);
+
+    // Find the first available port in the shuffled list
+    ports.into_iter().find(|port| port_is_available(*port))
 }
 
 fn port_is_available(port: u16) -> bool {
-    match TcpListener::bind(("127.0.0.1", port)) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    TcpListener::bind(("127.0.0.1", port)).is_ok()
 }
 
 pub async fn run_server(path: String, port: u16) -> Result<(), warp::Rejection> {
@@ -39,7 +60,7 @@ pub async fn run_server(path: String, port: u16) -> Result<(), warp::Rejection> 
             }
         });
 
-    warp::serve(static_files).run(([127, 0, 0, 1], port)).await;
+    warp::serve(static_files).run(([0, 0, 0, 0], port)).await;
 
     Ok(())
 }

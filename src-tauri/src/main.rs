@@ -4,10 +4,11 @@
 mod server;
 mod tunnel;
 
+use std::net::{IpAddr, Ipv4Addr};
 use std::path::Path;
 use std::process::Command;
 
-use server::{get_available_port, run_server};
+use server::{get_available_port, get_local_ip, run_server};
 use tunnel::{kill_tunnel, start_tunnel};
 use serde::Serialize;
 use tracing::{debug, error, info, Level};
@@ -83,7 +84,9 @@ async fn serve(path: String, is_public: bool) -> Result<SharedPayload, ()> {
     let _ = stop().await;
     let success = Arc::new(Mutex::new(true));
     let path_str = path.clone(); // Clone path_str to avoid moving
-    let port: u16 = get_available_port().unwrap_or(8765);
+    let port = get_available_port().unwrap_or(8765);
+    let localhost: IpAddr = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
+    let local_ip = get_local_ip().unwrap_or(localhost);
 
     // Spawn the server task and store it globally
     let success_clone = Arc::clone(&success);
@@ -104,7 +107,7 @@ async fn serve(path: String, is_public: bool) -> Result<SharedPayload, ()> {
         *server_task_lock = Some(server_task);
     }
 
-    let mut url = String::from(format!("http://localhost:{}", port));
+    let mut url = String::from(format!("http://{}:{}", local_ip, port));
 
     // Compute whether it's a directory before moving `path_str`
     let is_directory = Path::new(&path_str).is_dir();
