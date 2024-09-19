@@ -3,6 +3,7 @@ use std::sync::{mpsc, Arc, Mutex};
 use std::io::{self, BufRead, BufReader};
 use lazy_static::lazy_static;
 use std::sync::Once;
+use tracing::{error, info};
 
 lazy_static! {
     static ref GLOBAL_CHILD: Arc<Mutex<Option<Child>>> = Arc::new(Mutex::new(None));
@@ -25,6 +26,7 @@ pub fn start_tunnel(port: u16) -> Result<String, io::Error> {
     // Ensure initialization happens only once
     INIT.call_once(|| {
         let mut child = Command::new("ssh")
+            .arg("-T")
             .arg("-R")
             .arg(format!("80:localhost:{}", port))
             .arg("serveo.net")
@@ -46,7 +48,7 @@ pub fn start_tunnel(port: u16) -> Result<String, io::Error> {
                 let line = match line {
                     Ok(l) => l,
                     Err(e) => {
-                        eprintln!("Error reading line: {}", e);
+                        error!("Error reading line: {}", e);
                         continue;
                     }
                 };
@@ -72,9 +74,9 @@ pub fn kill_tunnel() -> io::Result<()> {
     let mut child_lock = GLOBAL_CHILD.lock().unwrap();
     if let Some(mut child) = child_lock.take() {
         child.kill()?; // Kill the process
-        println!("Tunnel process killed.");
+        info!("Tunnel process killed.");
     } else {
-        println!("No tunnel process to kill.");
+        info!("No tunnel process to kill.");
     }
     Ok(())
 }
