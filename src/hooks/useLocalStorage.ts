@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-export default <T = any>(key: string, defaultValue: T | null = null) => {
-  const getValue = (): T | null => {
+export default <T = any>(key: string, defaultValue: T) => {
+  const getValue = (): T => {
     try {
       const saved = localStorage.getItem(key);
       if (saved !== null) {
@@ -13,7 +13,7 @@ export default <T = any>(key: string, defaultValue: T | null = null) => {
     }
   };
 
-  const [value, setValue] = useState<T>(getValue);
+  const [value, setValue] = useState<T>(getValue());
 
   useEffect(() => {
     const rawValue = JSON.stringify(value);

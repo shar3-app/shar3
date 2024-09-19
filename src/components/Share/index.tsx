@@ -1,32 +1,21 @@
-import { useLocalStorage } from "@hooks";
-import {
-  Events,
-  History,
-  LoaderState,
-  Settings,
-  SharePayload,
-  Translator,
-} from "@shared";
+import { useConnection } from "@hooks";
+import { Events, LoaderState, SharePayload, Translator } from "@shared";
 import { open } from "@tauri-apps/api/dialog";
 import { emit, listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
-import { noConnectionError } from "@utils";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { getSettings, noConnectionError } from "@utils";
+import { useEffect, useState } from "react";
 import Dropzone from "./Dropzone";
 import Shared from "./Shared";
 
 interface ShareProps {
-  setHistory: Dispatch<SetStateAction<History>>;
-  isConnected: boolean;
   T: Translator;
 }
 
-const Share = ({ setHistory, isConnected, T }: ShareProps) => {
+const Share = ({ T }: ShareProps) => {
   const [shared, setShared] = useState<string | null>(null);
-  const { getValue: getSettings } = useLocalStorage<Settings | null>(
-    "settings",
-  );
+  const isConnected = useConnection();
 
   useEffect(() => {
     const listenShare = listen<string>(Events.Share, ({ payload }) =>
@@ -61,13 +50,12 @@ const Share = ({ setHistory, isConnected, T }: ShareProps) => {
 
     if (success) {
       setShared(url);
-      setHistory((currHistory) => [
+      emit(Events.UpdateHistory, [
         {
           path,
           isDirectory,
           sharedAt: Date.now(),
         },
-        ...currHistory.filter((hi) => hi.path !== path),
       ]);
     } else {
       // TODO error control

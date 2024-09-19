@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@components/*": ["./src/components/*"],
-      "@icons": ["./src/icons/index.ts"],
+      "@icons": ["./src/components/icons/index.ts"],
       "@hooks": ["./src/hooks/index.ts"],
       "@utils": ["./src/utils/index.ts"],
       "@shared": ["./shared/index.ts", "./shared/*"]

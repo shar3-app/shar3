@@ -1,4 +1,4 @@
-export * from './context-menu'
+export * from './contextMenu'
 export * from './history'
 export * from './payloads'
 export * from './settings'

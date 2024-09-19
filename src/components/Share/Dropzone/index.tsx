@@ -1,7 +1,6 @@
-import { useLocalStorage } from "@hooks";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { LoaderState, Settings, Translator } from "@shared";
-import { emit } from "@tauri-apps/api/event";
+import { Translator } from "@shared";
+import { getSettings } from "@utils";
 import DropdownPlaceholder from "../Placeholder";
 
 interface DropzoneProps {
@@ -17,10 +16,6 @@ const Dropzone = ({
   openExplorer,
   checkConnection,
 }: DropzoneProps) => {
-  const { getValue: getSettings } = useLocalStorage<Settings | null>(
-    "settings",
-  );
-
   useHotkeys(
     isDirectory ? ["Control+d", "Meta+d"] : ["Control+f", "Meta+f"],
     () => {
@@ -30,9 +25,15 @@ const Dropzone = ({
     },
   );
 
-  const onActivateInput = (event: any): void => {
-    event?.preventDefault();
-    openExplorer(isDirectory);
+  const onActivateInput = (
+    event:
+      | React.MouseEvent<HTMLInputElement, MouseEvent>
+      | React.KeyboardEvent<HTMLLabelElement>,
+  ): void => {
+    if (checkConnection()) {
+      event?.preventDefault();
+      openExplorer(isDirectory);
+    }
   };
 
   return (
@@ -42,8 +43,9 @@ const Dropzone = ({
       <label
         tabIndex={1}
         onKeyDown={(event) => {
-          if (["Enter", "Space"].includes(event?.code))
-            openExplorer(isDirectory);
+          if (["Enter", "Space"].includes(event?.code)) {
+            onActivateInput(event);
+          }
         }}
         htmlFor="dropzone-file"
         className="relative flex flex-col items-center px-4 justify-center w-full h-full cursor-pointer"
@@ -59,15 +61,7 @@ const Dropzone = ({
           type="file"
           title={""}
           className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-0"
-          onChange={(event) => onDrop((event?.target as any)?.files)}
           onClick={onActivateInput}
-          onDrop={(event) => {
-            if (checkConnection()) {
-              emit(LoaderState.Loading);
-            } else {
-              event?.preventDefault();
-            }
-          }}
         />
       </label>
     </div>

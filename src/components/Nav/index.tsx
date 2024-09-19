@@ -1,15 +1,20 @@
 import { BugIcon, DonateIcon, SettingsIcon } from "@icons";
-import { Translator } from "@shared";
+import { Events, Translator } from "@shared";
+import { emit } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/api/shell";
+import { toggleScroll } from "@utils";
 import NavItem from "./NavItem";
 
 interface NavProps {
-  toggleSettings: (state: boolean) => void;
   T: Translator;
-  isConnected: boolean;
 }
 
-const Nav = ({ toggleSettings, T }: NavProps) => {
+const Nav = ({ T }: NavProps) => {
+  const showSettings = () => {
+    emit(Events.ShowSettings);
+    toggleScroll(false);
+  };
+
   return (
     <div className="fixed z-50 w-56 max-w-[90%] h-16 shadow-md -translate-x-1/2 bg-primary rounded-full bottom-6 left-[50vw]">
       <div className="flex justify-around items-center h-full w-full px-2">
@@ -37,7 +42,7 @@ const Nav = ({ toggleSettings, T }: NavProps) => {
           icon={
             <SettingsIcon className="w-7 h-7 text-white group-hover:text-slate-300" />
           }
-          onClick={() => toggleSettings(true)}
+          onClick={showSettings}
         />
       </div>
     </div>

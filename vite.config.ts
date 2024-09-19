@@ -9,7 +9,7 @@ export default defineConfig(async () => ({
       "@hooks": resolve(__dirname, "src/hooks/index.ts"),
       "@utils": resolve(__dirname, "src/utils/index.ts"),
       "@components": resolve(__dirname, "src/components"),
-      "@icons": resolve(__dirname, "src/icons"),
+      "@icons": resolve(__dirname, "src/components/icons"),
       "@shared": resolve(__dirname, "shared/index.ts"),
     },
   },

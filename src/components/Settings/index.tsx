@@ -1,9 +1,10 @@
 import Button from "@components/Button";
 import { useLocalStorage, useTheme } from "@hooks";
-import { History, Locale, Settings } from "@shared";
-import { debounce } from "@utils";
+import { Events, Locale, LocalStorage, Settings } from "@shared";
+import { emit, listen } from "@tauri-apps/api/event";
+import { debounce, toggleScroll } from "@utils";
 import { Modal } from "flowbite-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useT } from "talkr";
 import SettingsCheckbox from "./Checkbox";
@@ -18,20 +19,23 @@ const defaultSettings: Settings = {
   shortcuts: true,
 };
 
-interface SettingsModalProps {
-  setHistory: Dispatch<SetStateAction<History>>;
-  show: boolean;
-  onClose: () => void;
-}
-
-const SettingsModal = ({ setHistory, show, onClose }: SettingsModalProps) => {
+const SettingsModal = () => {
+  const [visibility, setVisibility] = useState(false);
   const [_, setHistoryClicks] = useState(0);
   const { value: settings, setValue: setSettings } = useLocalStorage<Settings>(
-    "settings",
+    LocalStorage.Settings,
     defaultSettings,
   );
   const { setTheme } = useTheme();
   const { T } = useT();
+
+  useEffect(() => {
+    const listenShow = listen(Events.ShowSettings, () => setVisibility(true));
+
+    return () => {
+      listenShow.then((f) => f());
+    };
+  }, []);
 
   const handleChange = (key: keyof Settings, value: any) => {
     if (key === "theme") {
@@ -39,7 +43,7 @@ const SettingsModal = ({ setHistory, show, onClose }: SettingsModalProps) => {
     }
 
     setSettings((oldConfig) => ({
-      ...oldConfig,
+      ...(oldConfig ?? {}),
       [key]: value ?? null,
     }));
   };
@@ -48,7 +52,7 @@ const SettingsModal = ({ setHistory, show, onClose }: SettingsModalProps) => {
     setHistoryClicks((clicks) => {
       if (clicks) {
         toast.success(T("settings.clean_history_success"));
-        setHistory([]);
+        emit(Events.SetHistory, []);
         return 0;
       } else {
         toast.message(T("settings.clean_history_confirm"));
@@ -57,8 +61,13 @@ const SettingsModal = ({ setHistory, show, onClose }: SettingsModalProps) => {
     });
   };
 
+  const close = () => {
+    setVisibility(false);
+    toggleScroll(true);
+  };
+
   return (
-    <Modal dismissible={true} show={show} onClose={onClose}>
+    <Modal dismissible={true} show={visibility} onClose={close}>
       <Modal.Header>{T("settings.title")}</Modal.Header>
       <Modal.Body>
         <SettingsSections title="settings.general_settings">
