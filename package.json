@@ -4,8 +4,12 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "tauri dev",
+    "dev:web": "vite",
+    "build:web": "tsc && vite build",
+    "build:mac": "tauri build --target aarch64-apple-darwin",
+    "build:mac:intel": "tauri build --target x86_64-apple-darwin",
+    "build:mac:universal": "tauri build --target universal-apple-darwin",
     "preview": "vite preview",
     "tailwind": "npx tailwindcss -i ./src/App.css -o ./src/styles.css --watch",
     "tauri": "tauri"
