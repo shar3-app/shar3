@@ -1,4 +1,4 @@
 export enum LocalStorage {
-  Settings = "settings",
-  History = "history",
+  Settings = 'settings',
+  History = 'history'
 }

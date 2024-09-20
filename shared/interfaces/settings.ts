@@ -1,4 +1,4 @@
-import { Locale, ThemeMode } from "../types";
+import { Locale, ThemeMode } from '../types';
 
 export interface Settings {
   locale: Locale;

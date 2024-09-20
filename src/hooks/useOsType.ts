@@ -1,14 +1,14 @@
-import { OsType, type } from "@tauri-apps/api/os";
-import { useEffect, useState } from "react";
+import { OsType, type } from '@tauri-apps/api/os';
+import { useEffect, useState } from 'react';
 
 const useOsType = (): OsType | null => {
-	const [osType, setOsType] = useState<OsType | null>(null);
+  const [osType, setOsType] = useState<OsType | null>(null);
 
-	useEffect(() => {
-		type().then(setOsType);
-	}, []);
+  useEffect(() => {
+    type().then(setOsType);
+  }, []);
 
-	return osType;
+  return osType;
 };
 
 export default useOsType;

@@ -1,4 +1,3 @@
-export * from './events'
-export * from './loader'
-export * from './localStorage'
-
+export * from './events';
+export * from './loader';
+export * from './localStorage';

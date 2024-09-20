@@ -1,10 +1,7 @@
-import { ThemeMode } from "@shared";
-import { b64toBlob, svgString2Image } from "./base64";
+import { ThemeMode } from '@shared';
+import { b64toBlob, svgString2Image } from './base64';
 
-export const copyQrToClipboard = (
-  id: string,
-  theme: () => ThemeMode,
-): Promise<string> => {
+export const copyQrToClipboard = (id: string, theme: () => ThemeMode): Promise<string> => {
   return new Promise((resolve, reject) => {
     const svg = document.getElementById(id);
     if (svg) {
@@ -17,23 +14,23 @@ export const copyQrToClipboard = (
             navigator.clipboard
               .write([
                 new ClipboardItem({
-                  [blob.type]: blob,
-                }),
+                  [blob.type]: blob
+                })
               ])
               .then(() => {
-                resolve("generic.qr_copied.success");
+                resolve('generic.qr_copied.success');
               })
               .catch(() => {
-                reject("generic.qr_copied.error"); // log event
+                reject('generic.qr_copied.error'); // log event
               });
           },
-          theme() === "dark" ? "#000" : "#fff",
+          theme() === 'dark' ? '#000' : '#fff'
         );
       } catch (err) {
-        reject("generic.qr_copied.error"); // log event
+        reject('generic.qr_copied.error'); // log event
       }
     } else {
-      reject("generic.qr_copied.error"); // log event
+      reject('generic.qr_copied.error'); // log event
     }
   });
 };

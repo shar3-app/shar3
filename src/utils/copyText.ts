@@ -3,14 +3,14 @@ export const copyURLToClipboard = (url: string): Promise<string> => {
     try {
       navigator.clipboard
         .writeText(url)
-        .then(() => resolve("generic.url_copied.success"))
+        .then(() => resolve('generic.url_copied.success'))
         .catch(() => {
           // log err
-          reject("generic.url_copied.error");
+          reject('generic.url_copied.error');
         });
     } catch (err) {
       // log err
-      reject("generic.url_copied.error");
+      reject('generic.url_copied.error');
     }
   });
 };

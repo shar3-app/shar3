@@ -63,7 +63,7 @@ html.dark *::-webkit-scrollbar-thumb {
   gap: 12px !important;
 }
 
-[data-sonner-toaster][data-x-position="center"] {
+[data-sonner-toaster][data-x-position='center'] {
   left: 50% !important;
   transform: translate(-50%) !important;
 }

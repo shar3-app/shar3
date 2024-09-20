@@ -1,4 +1,4 @@
-import { Tooltip } from "flowbite-react";
+import { Tooltip } from 'flowbite-react';
 
 interface NavItemProps {
   title: string;
@@ -10,7 +10,7 @@ interface NavItemProps {
 const NavItem = ({ title, icon, onClick, className }: NavItemProps) => {
   return (
     <div
-      className={`cursor-pointer inline-flex flex-col h-full items-center rounded-l-full rounded-r-full justify-center group ${className ?? ""}`}
+      className={`cursor-pointer inline-flex flex-col h-full items-center rounded-l-full rounded-r-full justify-center group ${className ?? ''}`}
       onClick={onClick}
     >
       <Tooltip content={title} arrow={false} className="!-top-10">
