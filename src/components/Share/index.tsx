@@ -1,114 +1,112 @@
 import { useConnection } from "@hooks";
-import { Events, LoaderState, SharePayload, Translator } from "@shared";
+import { Events, LoaderState, SharePayload } from "@shared";
 import { open } from "@tauri-apps/api/dialog";
 import { emit, listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
 import { getSettings, noConnectionError } from "@utils";
 import { useEffect, useState } from "react";
+import { useT } from "talkr";
 import Dropzone from "./Dropzone";
 import Shared from "./Shared";
 
-interface ShareProps {
-  T: Translator;
-}
+const Share = () => {
+	const [shared, setShared] = useState<string | null>(null);
+	const isConnected = useConnection();
+	const { T } = useT();
 
-const Share = ({ T }: ShareProps) => {
-  const [shared, setShared] = useState<string | null>(null);
-  const isConnected = useConnection();
+	useEffect(() => {
+		const listenShare = listen<string>(Events.Share, ({ payload }) =>
+			serve(payload),
+		);
+		const listenDrop = listen<string>(
+			"tauri://file-drop",
+			({ payload: [path] }) => appWindow.setFocus().then(() => serve(path)),
+		);
 
-  useEffect(() => {
-    const listenShare = listen<string>(Events.Share, ({ payload }) =>
-      serve(payload),
-    );
-    const listenDrop = listen<string>(
-      "tauri://file-drop",
-      ({ payload: [path] }) => appWindow.setFocus().then(() => serve(path)),
-    );
+		return () => {
+			listenShare.then((f) => f());
+			listenDrop.then((f) => f());
+		};
+	}, []);
 
-    return () => {
-      listenShare.then((f) => f());
-      listenDrop.then((f) => f());
-    };
-  }, []);
+	const checkConnection = (): boolean => {
+		if (!isConnected) {
+			noConnectionError(T);
+		}
 
-  const checkConnection = (): boolean => {
-    if (!isConnected) {
-      noConnectionError(T);
-    }
+		return isConnected;
+	};
 
-    return isConnected;
-  };
+	const updateSharedUrl = ({
+		path,
+		url,
+		success,
+		isDirectory,
+	}: SharePayload): void => {
+		setLoading(false);
 
-  const updateSharedUrl = ({
-    path,
-    url,
-    success,
-    isDirectory,
-  }: SharePayload): void => {
-    setLoading(false);
+		if (success) {
+			setShared(url);
+			emit(Events.UpdateHistory, [
+				{
+					path,
+					isDirectory,
+					sharedAt: Date.now(),
+				},
+			]);
+		} else {
+			// TODO error control
+		}
+	};
 
-    if (success) {
-      setShared(url);
-      emit(Events.UpdateHistory, [
-        {
-          path,
-          isDirectory,
-          sharedAt: Date.now(),
-        },
-      ]);
-    } else {
-      // TODO error control
-    }
-  };
+	const stopSharing = () => {
+		setLoading(true);
+		invoke<boolean>("stop")
+			.then((status) => {
+				if (status) {
+					setShared(null);
+				} else {
+					// TODO error
+					alert("error");
+				}
+			})
+			.catch(() => {
+				alert("error");
+				// TODO catch and stop loader
+			})
+			.finally(() => setLoading(false));
+	};
 
-  const stopSharing = () => {
-    setLoading(true);
-    invoke<boolean>("stop")
-      .then((status) => {
-        if (status) {
-          setShared(null);
-        } else {
-          // TODO error
-          alert("error");
-        }
-      })
-      .catch(() => {
-        alert("error");
-        // TODO catch and stop loader
-      })
-      .finally(() => setLoading(false));
-  };
+	const openExplorer = async (isDirectory: boolean) => {
+		if (checkConnection()) {
+			const selected = (await open({
+				multiple: false,
+				directory: isDirectory,
+			})) as string | null;
 
-  const openExplorer = async (isDirectory: boolean) => {
-    if (checkConnection()) {
-      const selected = (await open({
-        multiple: false,
-        directory: isDirectory,
-      })) as string | null;
+			serve(selected);
+		}
+	};
 
-      serve(selected);
-    }
-  };
+	const serve = (path: string | null) => {
+		if (path) {
+			setLoading();
+			invoke<SharePayload>("serve", {
+				path,
+				isPublic: getSettings()?.publicShare,
+			})
+				.then((payload) => {
+					updateSharedUrl(payload);
+				})
+				// TODO add catch
+				.finally(() => setLoading(false));
+		} else {
+			// TODOerror
+		}
+	};
 
-  const serve = (path: string | null) => {
-    if (path) {
-      setLoading();
-      invoke<SharePayload>("serve", {
-        path,
-        isPublic: getSettings()?.publicShare,
-      })
-        .then((payload) => {
-          updateSharedUrl(payload);
-        })
-        // TODO add catch
-        .finally(() => setLoading(false));
-    } else {
-      // TODOerror
-    }
-  };
-
-  /* TODO check old usage
+	/* TODO check old usage
 
   const onShare = (_, path: any) => {
     if (!path.canceled && path.filePaths?.length && checkConnection()) {
@@ -117,31 +115,31 @@ const Share = ({ T }: ShareProps) => {
     }
     };*/
 
-  const setLoading = (state = true): void => {
-    emit(state ? LoaderState.Loading : LoaderState.StopLoading);
-  };
+	const setLoading = (state = true): void => {
+		emit(state ? LoaderState.Loading : LoaderState.StopLoading);
+	};
 
-  return !shared ? (
-    <div className="flex gap-6">
-      <Dropzone
-        T={T}
-        openExplorer={openExplorer}
-        checkConnection={checkConnection}
-      />
-      <Dropzone
-        T={T}
-        isDirectory={false}
-        openExplorer={openExplorer}
-        checkConnection={checkConnection}
-      />
-    </div>
-  ) : (
-    <div
-      className={`relative flex items-center justify-center w-full rounded-lg transition-all border-2 border-gray-300 border-dashed dark:border-gray-600 bg-gray-50 dark:bg-gray-800`}
-    >
-      <Shared shared={shared} onStop={stopSharing} T={T} />
-    </div>
-  );
+	return !shared ? (
+		<div className="flex gap-6">
+			<Dropzone
+				T={T}
+				openExplorer={openExplorer}
+				checkConnection={checkConnection}
+			/>
+			<Dropzone
+				T={T}
+				isDirectory={false}
+				openExplorer={openExplorer}
+				checkConnection={checkConnection}
+			/>
+		</div>
+	) : (
+		<div
+			className={`relative flex items-center justify-center w-full rounded-lg transition-all border-2 border-gray-300 border-dashed dark:border-gray-600 bg-gray-50 dark:bg-gray-800`}
+		>
+			<Shared shared={shared} onStop={stopSharing} T={T} />
+		</div>
+	);
 };
 
 export default Share;

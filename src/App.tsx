@@ -4,31 +4,27 @@ import Loader from "@components/Loader";
 import Nav from "@components/Nav";
 import SettingsModal from "@components/Settings";
 import Share from "@components/Share";
-import { Locale } from "@shared";
 import { Toaster } from "sonner";
-import { useT } from "talkr";
 
 function App() {
-  const { T, locale } = useT();
+	return (
+		<>
+			<Toaster richColors position="top-center" />
+			<Loader />
+			<ContextMenu />
 
-  return (
-    <>
-      <Toaster richColors position="top-center" />
-      <Loader />
-      <ContextMenu />
+			<nav>
+				<Nav />
+			</nav>
+			<main className="space-y-6 pb-20">
+				<Share />
 
-      <nav>
-        <Nav T={T} />
-      </nav>
-      <main className="space-y-6 pb-20">
-        <Share T={T} />
+				<HistoryTable />
+			</main>
 
-        <HistoryTable locale={locale as Locale} T={T} />
-      </main>
-
-      <SettingsModal />
-    </>
-  );
+			<SettingsModal />
+		</>
+	);
 }
 
 export default App;
