@@ -1,11 +1,11 @@
 use std::io::Error;
 use std::path::Path;
 
-use crate::server::utils::{file_to_base64, read_file_content};
+use crate::server::utils::{file_to_base64, get_filename, read_file_content};
 
 pub fn svg_html(path_str: &str) -> Result<String, Error> {
     let path = Path::new(path_str);
-    let name;
+    let name = get_filename(path);
     let svg;
     let base64;
 
@@ -17,12 +17,6 @@ pub fn svg_html(path_str: &str) -> Result<String, Error> {
     match read_file_content(path_str) {
         Ok(content) => svg = content,
         Err(_) => svg = String::from("<p>Error rendering svg file</p>"),
-    }
-
-    if let Some(filename) = path.file_name().and_then(|os_str| os_str.to_str()) {
-        name = filename;
-    } else {
-        name = "filename";
     }
 
     let image_src = &format!("data:image/svg;base64,{}", base64.as_str());
@@ -50,7 +44,7 @@ pub fn svg_html(path_str: &str) -> Result<String, Error> {
                 <a id=\"download\" href=\"");
     html.push_str(image_src);
     html.push_str("\" download=\"");
-    html.push_str(name);
+    html.push_str(&name);
     html.push_str("\">DOWNLOAD IMAGE</a>
                 <button id=\"rotRightButton\"><svg style=\"transform:scaleX(-1)\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5\"/></svg></button>
                 <button id=\"rotLeftButton\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5\"/></svg></button>

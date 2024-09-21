@@ -1,8 +1,10 @@
 mod directory;
+mod file;
 mod image;
 mod svg;
 
 use directory::directory_html;
+use file::file_html;
 use image::image_html;
 use std::fs::File;
 use std::io::Read;
@@ -24,7 +26,7 @@ pub async fn render_content(selected_path: &str) -> Result<Response<Body>, warp:
                 "jpg" | "jpeg" | "png" | "apng" | "gif" | "bmp" | "webp" | "avif" | "tiff"
                 | "tif" => serve_image(&file_path, ext).await,
                 "svg" => serve_svg(&file_path).await,
-                _ => serve_pdf(&file_path).await,
+                _ => serve_file(&file_path).await,
             },
             None => Err(warp::reject::not_found()),
         }
@@ -75,7 +77,19 @@ async fn serve_image(path: &str, ext: &str) -> Result<Response<Body>, warp::Reje
 async fn serve_svg(path: &str) -> Result<Response<Body>, warp::Rejection> {
     let html;
     match svg_html(path) {
-        Ok(image_html) => html = image_html,
+        Ok(svg_html) => html = svg_html,
+        Err(_) => html = String::from("An error ocurred"),
+    }
+    Ok(Response::builder()
+        .header(CONTENT_TYPE, "text/html")
+        .body(Body::from(html))
+        .unwrap())
+}
+
+async fn serve_file(path: &str) -> Result<Response<Body>, warp::Rejection> {
+    let html;
+    match file_html(path) {
+        Ok(file_html) => html = file_html,
         Err(_) => html = String::from("An error ocurred"),
     }
     Ok(Response::builder()

@@ -12,6 +12,7 @@ dependencies = [
  "dufs",
  "get_if_addrs",
  "lazy_static",
+ "percent-encoding",
  "rand 0.8.5",
  "serde",
  "serde_json",

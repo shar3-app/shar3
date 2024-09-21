@@ -1,6 +1,7 @@
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use chrono::{DateTime, Local, Utc};
+use percent_encoding::percent_decode_str;
 use std::fs::{read_to_string, File};
 use std::io::{self, Error, Read};
 use std::path::Path;
@@ -39,10 +40,24 @@ pub fn read_file_content(file_path: &str) -> io::Result<String> {
     Ok(svg_content)
 }
 
+pub fn decode_percent_encoded_path(encoded: &str) -> String {
+    percent_decode_str(encoded).decode_utf8_lossy().to_string()
+}
+
+pub fn get_filename(path: &Path) -> String {
+    if let Some(filename) = path.file_name().and_then(|os_str| os_str.to_str()) {
+        decode_percent_encoded_path(filename)
+    } else {
+        String::from("filename")
+    }
+}
+
 // Function to read a file and return its Base64 representation
 pub fn file_to_base64(file_path: &str) -> io::Result<String> {
+    let decoded_path = decode_percent_encoded_path(file_path);
+
     // Open the file
-    let mut file = File::open(file_path)?;
+    let mut file = File::open(&decoded_path)?;
 
     // Read the file contents into a vector of bytes
     let mut buffer = Vec::new();
