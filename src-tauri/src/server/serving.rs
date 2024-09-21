@@ -21,9 +21,8 @@ pub async fn render_content(selected_path: &str) -> Result<Response<Body>, warp:
         match path.extension().and_then(|e| e.to_str()) {
             Some(ext) => match ext.to_lowercase().as_str() {
                 "pdf" => serve_pdf(&file_path).await,
-                "jpg" | "jpeg" | "png" | "gif" | "bmp" | "webp" => {
-                    serve_image(&file_path, ext).await
-                }
+                "jpg" | "jpeg" | "png" | "apng" | "gif" | "bmp" | "webp" | "avif" | "tiff"
+                | "tif" => serve_image(&file_path, ext).await,
                 "svg" => serve_svg(&file_path).await,
                 _ => serve_pdf(&file_path).await,
             },
