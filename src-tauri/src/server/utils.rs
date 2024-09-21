@@ -1,8 +1,9 @@
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use chrono::{DateTime, Local, Utc};
-use std::fs::File;
+use std::fs::{read_to_string, File};
 use std::io::{self, Error, Read};
+use std::path::Path;
 use std::result::Result;
 use std::time::SystemTime;
 
@@ -28,6 +29,14 @@ pub fn format_time(result: Result<SystemTime, Error>) -> String {
         }
         Err(_) => String::new(),
     }
+}
+
+pub fn read_file_content(file_path: &str) -> io::Result<String> {
+    let path = Path::new(file_path);
+
+    // Read the SVG file content as a string
+    let svg_content = read_to_string(path)?;
+    Ok(svg_content)
 }
 
 // Function to read a file and return its Base64 representation

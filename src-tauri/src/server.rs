@@ -3,7 +3,7 @@ mod utils;
 
 use get_if_addrs::get_if_addrs;
 use rand::seq::SliceRandom;
-use serving::list_directory_contents;
+use serving::render_content;
 use std::net::IpAddr;
 use std::{net::TcpListener, path::PathBuf};
 use warp::Filter;
@@ -38,7 +38,7 @@ pub async fn run_server(path: String, port: u16) -> Result<(), warp::Rejection> 
 
             // Convert PathBuf to string for `list_directory_contents`.
             if let Some(full_path_str) = full_path.to_str() {
-                list_directory_contents(full_path_str).await
+                render_content(full_path_str).await
             } else {
                 Err(warp::reject::not_found()) // Handle the case where path conversion fails.
             }

@@ -1,8 +1,7 @@
 use std::io::Error;
 use std::path::Path;
-use std::{fs, io};
 
-use crate::server::utils::{file_to_base64, format_time};
+use crate::server::utils::file_to_base64;
 
 pub fn image_html(path_str: &str, ext: &str) -> Result<String, Error> {
     let path = Path::new(path_str);
@@ -30,14 +29,14 @@ pub fn image_html(path_str: &str, ext: &str) -> Result<String, Error> {
             <style>
                 body { background-color: #111111; margin: 0; }
                 #imgContent { width: 100vw; height: 100vh; display: inline-block; }
-                #imgControls { background-color: white; position: absolute; width: 325px; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; padding: .65rem; gap: .5rem; border-radius: .35rem; box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px; }
+                #imgControls { background-color: white; position: absolute; width: 325px; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; padding: .5rem .65rem; gap: .5rem; border-radius: .35rem; box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px; }
                 #imgControls button { transition: color 150ms; background-color: transparent; margin-top: .15rem; color: #222222; border: none; cursor: pointer; }
                 #imgControls button:hover { color: #0d0d0d; }
                 #imgFrame { height: 100%; width: 100%; }
                 #imgFrame > div { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); height: auto; width: 50%; overflow: visible; }
                 #invoiceImg { width: 100%; transform-origin: 50% 50%; box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; }
-                #download { background-color: #222222; transition: background 150ms; border-radius: .35rem; cursor: pointer; margin-right: .5rem; padding: .5rem .75rem; display: flex; justify-content: center; align-items: center; font-size: .75rem; font-weight: bold; color: white; font-family: sans-serif; text-decoration: none; }
-                #download:hover { background: #0d0d0d; }
+                #download { background-color: #7f5af0; transition: background 150ms; border-radius: .35rem; cursor: pointer; margin-right: .5rem; padding: .75rem; display: flex; justify-content: center; align-items: center; font-size: .75rem; font-weight: bold; color: white; font-family: sans-serif; text-decoration: none; }
+                #download:hover { background: #6546c3; }
             </style>
         </head>
         <body>
@@ -108,49 +107,4 @@ pub fn image_html(path_str: &str, ext: &str) -> Result<String, Error> {
     ");
 
     Ok(html)
-}
-
-pub fn format_listing_page(path: &Path) -> Result<String, Error> {
-    let mut html = String::from("<html><body><h1>Directory: ");
-    html.push_str(path.display().to_string().as_str());
-    html.push_str("</h1><table><thead><tr><th>Name</th><th>Size</th><th>Last modification</th></tr></thead><tbody>");
-
-    // Iterate over the directory
-    let entries = fs::read_dir(path)?
-        .map(|entry| {
-            let entry = entry?;
-            let path = entry.path();
-            let name = path.file_name().unwrap_or_default().to_string_lossy();
-            let size = path.metadata()?.len();
-            let modified = path.metadata()?.modified();
-
-            let mut link = String::new();
-            if path.is_dir() {
-                link.push_str("<tr><td><a href=\"");
-                link.push_str(&name);
-                link.push_str("/\">");
-                link.push_str(&name);
-                link.push_str("/</a></td><td></td><td>");
-                link.push_str(&format_time(modified));
-                link.push_str("</td></tr>");
-            } else {
-                link.push_str("<tr><td><a href=\"");
-                link.push_str(&name);
-                link.push_str("\">");
-                link.push_str(&name);
-                link.push_str("</a></td><td>");
-                link.push_str(&size.to_string());
-                link.push_str(" bytes</td><td>");
-                link.push_str(&format_time(modified));
-                link.push_str("</td></tr>");
-            }
-
-            Ok(link)
-        })
-        .collect::<Result<Vec<_>, io::Error>>()?;
-
-    html.push_str(&entries.concat());
-    html.push_str("</tbody></table></body></html>");
-
-    Ok(html) // Return the final HTML string
 }
