@@ -7,7 +7,7 @@ use std::result::Result;
 use std::time::SystemTime;
 
 pub fn remove_last_char(s: &str) -> String {
-    if s.is_empty() {
+    if s.is_empty() || !s.ends_with("/") {
         s.to_string()
     } else {
         s[..s.len() - 1].to_string()
