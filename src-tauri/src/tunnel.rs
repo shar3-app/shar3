@@ -1,8 +1,8 @@
-use std::process::{Command, Child, Stdio};
-use std::sync::{mpsc, Arc, Mutex};
-use std::io::{self, BufRead, BufReader};
 use lazy_static::lazy_static;
+use std::io::{self, BufRead, BufReader};
+use std::process::{Child, Command, Stdio};
 use std::sync::Once;
+use std::sync::{mpsc, Arc, Mutex};
 use tracing::{error, info};
 
 lazy_static! {
@@ -11,12 +11,10 @@ lazy_static! {
 }
 
 fn extract_url(line: &str) -> Option<String> {
-    if let Some(start) = line.find("http") {
-        if let Some(end) = line.find(".serveo.net") {
-            return Some(line[start..=end + 10].to_string()); // end + 10 accounts for ".serveo.net"
-        }
-    }
-    None
+    line.find("http").and_then(|start| {
+        line.find(".serveo.net")
+            .map(|end| line[start..=end + 10].to_string())
+    })
 }
 
 pub fn start_tunnel(port: u16) -> Result<String, io::Error> {
@@ -68,7 +66,10 @@ pub fn start_tunnel(port: u16) -> Result<String, io::Error> {
     // Wait for the URL to be received from the channel
     match rx.recv() {
         Ok(url) => Ok(url),
-        Err(e) => Err(io::Error::new(io::ErrorKind::NotFound, format!("Failed to receive URL: {}", e))),
+        Err(e) => Err(io::Error::new(
+            io::ErrorKind::NotFound,
+            format!("Failed to receive URL: {}", e),
+        )),
     }
 }
 

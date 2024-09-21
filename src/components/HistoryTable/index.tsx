@@ -27,11 +27,16 @@ const HistoryTable = () => {
   useRerenderer();
 
   useEffect(() => {
-    const listenUpdateHistory = listen<History>(Events.UpdateHistory, ({ payload }) =>
-      setHistory((currentHistory) => [...payload, ...currentHistory])
+    const listenUpdateHistory = listen<History>(Events.UpdateHistory, ({ payload: newHistory }) =>
+      setHistory((currentHistory) => [
+        ...newHistory,
+        ...currentHistory.filter((historyEntry) =>
+          newHistory.some((newHistoryEntry) => newHistoryEntry.path !== historyEntry.path)
+        )
+      ])
     );
-    const listenSetHistory = listen<History>(Events.SetHistory, ({ payload }) =>
-      setHistory(payload)
+    const listenSetHistory = listen<History>(Events.SetHistory, ({ payload: newHistory }) =>
+      setHistory(newHistory)
     );
 
     return () => {

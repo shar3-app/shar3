@@ -4,19 +4,18 @@
 mod server;
 mod tunnel;
 
+use serde::Serialize;
 use std::net::{IpAddr, Ipv4Addr};
 use std::path::Path;
 use std::process::Command;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+use tokio::task::JoinHandle;
+use tracing::{debug, error, info, Level};
+use tracing_subscriber::FmtSubscriber;
 
 use server::{get_available_port, get_local_ip, run_server};
 use tunnel::{kill_tunnel, start_tunnel};
-use serde::Serialize;
-use tracing::{debug, error, info, Level};
-use tracing_subscriber::FmtSubscriber;
-use tokio::sync::Mutex;
-use tokio::task::JoinHandle;
-use std::sync::Arc;
-
 
 // Define global task storage
 lazy_static::lazy_static! {
@@ -24,16 +23,14 @@ lazy_static::lazy_static! {
 }
 
 async fn stop_server() -> Result<(), String> {
-    let mut server_task_lock = SERVER_TASK.lock().await; // Ensure .await is used here
+    let mut server_task_lock = SERVER_TASK.lock().await;
     if let Some(task) = server_task_lock.take() {
-        // Abort the task and handle potential errors
-        task.abort();
-        Ok(()) // Indicate success
+        task.abort(); // Abort the server task
+        Ok(())
     } else {
         Err("No server task to abort.".to_string())
     }
 }
-
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -41,7 +38,7 @@ struct SharedPayload {
     path: String,
     url: String,
     success: bool,
-    is_directory: bool
+    is_directory: bool,
 }
 
 #[tauri::command]
@@ -52,10 +49,7 @@ fn open(path: String, os_type: String) {
             .spawn()
             .unwrap();
     } else {
-        Command::new( "open" )
-            .args(["-R", &path])
-            .spawn()
-            .unwrap();
+        Command::new("open").args(["-R", &path]).spawn().unwrap();
     }
 }
 
@@ -66,15 +60,15 @@ fn log(text: String) {
 
 #[tauri::command]
 async fn stop() -> Result<bool, bool> {
-    let mut success = true;
-
-    if let Err(error_tunnel) = kill_tunnel() {
-        success = false;
-        error!("Error killing tunnel: {}", error_tunnel);
-    }
+    let success = if kill_tunnel().is_err() {
+        error!("Error killing tunnel.");
+        false
+    } else {
+        true
+    };
 
     match stop_server().await {
-        Ok(()) => Ok(success),
+        Ok(_) => Ok(success),
         Err(_) => Ok(false),
     }
 }
@@ -82,59 +76,51 @@ async fn stop() -> Result<bool, bool> {
 #[tauri::command]
 async fn serve(path: String, is_public: bool) -> Result<SharedPayload, ()> {
     let _ = stop().await;
-    let success = Arc::new(Mutex::new(true));
-    let path_str = path.clone(); // Clone path_str to avoid moving
+
+    let path_str = path.clone();
     let port = get_available_port().unwrap_or(8765);
-    let localhost: IpAddr = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
+    let localhost = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
     let local_ip = get_local_ip().unwrap_or(localhost);
 
-    // Spawn the server task and store it globally
-    let success_clone = Arc::clone(&success);
+    let success = Arc::new(Mutex::new(true));
     let server_task = tokio::spawn({
-        let port = port.clone(); // Clone for use in the async block
         let path_str = path_str.clone();
+        let success_clone = Arc::clone(&success);
+
         async move {
             if let Err(e) = run_server(path_str, port).await {
-                let mut success = success_clone.lock().await;
-                *success = false;
+                *success_clone.lock().await = false;
                 error!("Error running server: {:?}", e);
             }
         }
     });
 
-    {
-        let mut server_task_lock = SERVER_TASK.lock().await; // Ensure .await is used here
-        *server_task_lock = Some(server_task);
-    }
+    *SERVER_TASK.lock().await = Some(server_task);
 
-    let mut url = String::from(format!("http://{}:{}", local_ip, port));
-
-    // Compute whether it's a directory before moving `path_str`
     let is_directory = Path::new(&path_str).is_dir();
+    let mut final_url = format!("http://{}:{}", local_ip, port);
 
-    let success = *success.lock().await;
-    let mut final_success = success;
-
-    if success && is_public {
+    let final_success = if *success.lock().await && is_public {
         match start_tunnel(port) {
-            Ok(result) => {
+            Ok(tunnel_url) => {
                 info!("Started tunnel correctly");
-                url = result;
-                final_success = true;
-            },
+                final_url = tunnel_url;
+                true
+            }
             Err(error) => {
                 error!("Error starting tunnel: {}", error);
-                url = String::new();
-                final_success = false;
+                false
             }
         }
-    }
+    } else {
+        *success.lock().await
+    };
 
     Ok(SharedPayload {
         path: path_str,
-        url,
+        url: final_url,
         success: final_success,
-        is_directory
+        is_directory,
     })
 }
 
@@ -142,6 +128,7 @@ fn main() {
     let subscriber = FmtSubscriber::builder()
         .with_max_level(Level::DEBUG)
         .finish();
+
     tracing::subscriber::set_global_default(subscriber)
         .expect("Failed to set global default subscriber");
 

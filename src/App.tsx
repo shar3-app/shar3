@@ -7,6 +7,7 @@ import Share from '@components/Share';
 import { Toaster } from 'sonner';
 
 function App() {
+  // TODO splashscreen
   return (
     <>
       <Toaster richColors position="top-center" />
