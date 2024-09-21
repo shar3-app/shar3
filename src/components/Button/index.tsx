@@ -1,4 +1,6 @@
-const Button = ({ className, children, ...props }: any) => {
+import { ComponentProps } from 'react';
+
+const Button = ({ className, children, ...props }: ComponentProps<'button'>) => {
   return (
     <button
       type="button"

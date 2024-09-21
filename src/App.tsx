@@ -10,7 +10,7 @@ function App() {
   // TODO splashscreen
   return (
     <>
-      <Toaster richColors position="top-center" />
+      <Toaster position="top-center" />
       <Loader />
       <ContextMenu />
 

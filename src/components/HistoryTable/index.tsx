@@ -1,18 +1,13 @@
 import { openContextMenu } from '@components/ContextMenu';
 import { useLocalStorage, useOsType, useRerenderer } from '@hooks';
 import { FileIcon, FolderIcon } from '@icons';
-import { Events, History, HistoryItem, LocalStorage } from '@shared';
+import { Events, History, HistoryItem, Locale, LocalStorage } from '@shared';
 import { emit, listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/tauri';
 import { from } from '@utils';
 import { MouseEvent as ME, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useT } from 'talkr';
-
-const evenClasses =
-  'flex py-[1.15rem] border-b bg-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer first:rounded-t-md last:rounded-b-md';
-const oddClasses =
-  'flex py-[1.15rem] bg-white bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer last:rounded-b-md';
 
 const HistoryTable = () => {
   const { T, locale } = useT();
@@ -98,7 +93,9 @@ const HistoryTable = () => {
               <li
                 key={idx}
                 tabIndex={1}
-                className={idx % 2 ? oddClasses : evenClasses}
+                className={`flex py-[1.15rem] border-b last:border-b-0 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer last:rounded-b-md first:rounded-t-md ${
+                  idx % 2 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-gray-100 dark:bg-gray-800'
+                }`}
                 onClick={() => shareHistoryItem(historyItem)}
                 onKeyDown={(event) => {
                   if (['Enter', 'Space'].includes(event?.code)) shareHistoryItem(historyItem);
@@ -128,7 +125,7 @@ const HistoryTable = () => {
                   </div>
                 </header>
                 <time className="flex items-center pr-6 pl-4 w-2/6 lg:w-1/6 justify-end text-end">
-                  {from(locale, new Date(historyItem.sharedAt))}
+                  {from(locale as Locale, new Date(historyItem.sharedAt))}
                 </time>
               </li>
             );
@@ -137,7 +134,9 @@ const HistoryTable = () => {
             <li
               tabIndex={1}
               key={history.length + 1}
-              className={`${visibleItems % 2 ? oddClasses : evenClasses}`}
+              className={`flex py-[1.15rem] border-b last:border-b-0 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer last:rounded-b-md first:rounded-t-md ${
+                visibleItems % 2 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-gray-100 dark:bg-gray-800'
+              }`}
               onClick={loadMore}
             >
               <p className="w-full text-center font-medium">Load more...</p>

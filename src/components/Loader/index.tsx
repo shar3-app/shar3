@@ -1,16 +1,27 @@
+import { useTimeout } from '@hooks';
 import { LoaderState } from '@shared';
 import { listen } from '@tauri-apps/api/event';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import './loader.css';
+import ReloadWarning from './ReloadWarning';
 
 const Loader = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const { timeout, killTimeout } = useTimeout(() => {
+    toast.warning(<ReloadWarning />, {
+      duration: 9999999999,
+      dismissible: true
+    });
+  }, 7000);
 
   const startLoading = () => {
+    timeout();
     document.documentElement.style.overflowY = 'hidden';
     setLoading(true);
   };
   const stopLoading = () => {
+    killTimeout();
     document.documentElement.style.overflowY = 'auto';
     setLoading(false);
   };
