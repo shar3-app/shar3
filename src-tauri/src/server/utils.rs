@@ -4,9 +4,13 @@ use chrono::{DateTime, Local, Utc};
 use percent_encoding::percent_decode_str;
 use std::fs::{read_to_string, File};
 use std::io::{self, Error, Read};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::result::Result;
 use std::time::SystemTime;
+use tokio_util::io::ReaderStream;
+use warp::hyper::header::{HeaderValue, CONTENT_DISPOSITION};
+use warp::hyper::Body;
+use warp::reply::Reply;
 
 pub fn remove_last_char(s: &str) -> String {
     if s.is_empty() || !s.ends_with("/") {
@@ -89,4 +93,40 @@ pub fn format_bytes(bytes: u64) -> String {
     } else {
         format!("{} B", bytes)
     }
+}
+
+// Stream the file to the client
+pub async fn stream_file(file_path: String) -> Result<impl warp::Reply, warp::Rejection> {
+    let path = PathBuf::from(file_path);
+
+    // Try to open the file
+    let file = match tokio::fs::File::open(path.clone()).await {
+        Ok(file) => file,
+        Err(_) => return Err(warp::reject::not_found()),
+    };
+
+    // Create a stream from the file
+    let stream = ReaderStream::new(file);
+
+    // Get the file name
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("file");
+
+    // Set the content-disposition header for download
+    let content_disposition =
+        HeaderValue::from_str(&format!("attachment; filename=\"{}\"", file_name))
+            .unwrap_or_else(|_| HeaderValue::from_static("attachment"));
+
+    // Create a warp reply with a stream body and the necessary headers
+    let response = warp::reply::Response::new(Body::wrap_stream(stream));
+    let mut response = response.into_response();
+
+    // Add the Content-Disposition header to trigger download
+    response
+        .headers_mut()
+        .insert(CONTENT_DISPOSITION, content_disposition);
+
+    Ok(response)
 }
