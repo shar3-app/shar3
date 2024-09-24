@@ -13,7 +13,7 @@ import TextInput from './TextInput';
 
 const defaultSettings: Settings = {
   locale: 'en',
-  publicShare: true,
+  publicShare: false,
   theme: 'dark',
   auth: null,
   shortcuts: true
@@ -30,9 +30,18 @@ const SettingsModal = () => {
   const { T } = useT();
 
   useEffect(() => {
+    const listenSettings = listen<Partial<Settings>>(
+      Events.UpdateSettings,
+      ({ payload: newSettings }) =>
+        setSettings((currentSettings) => ({
+          ...currentSettings,
+          ...newSettings
+        }))
+    );
     const listenShow = listen(Events.ShowSettings, () => setVisibility(true));
 
     return () => {
+      listenSettings.then((f) => f());
       listenShow.then((f) => f());
     };
   }, []);
@@ -42,10 +51,15 @@ const SettingsModal = () => {
       setTheme(value);
     }
 
-    setSettings((oldConfig) => ({
-      ...(oldConfig ?? {}),
-      [key]: value ?? null
-    }));
+    setSettings((currentSettings) => {
+      const newSettings = {
+        ...(currentSettings ?? {}),
+        [key]: value ?? null
+      };
+      emit(Events.SettingsUpdated, newSettings);
+
+      return newSettings;
+    });
   };
 
   const clearHistory = () => {
@@ -83,12 +97,6 @@ const SettingsModal = () => {
       <Modal.Header>{T('settings.title')}</Modal.Header>
       <Modal.Body>
         <SettingsSections title="settings.general_settings">
-          <SettingsCheckbox
-            label={T('settings.public_share')}
-            isChecked={settings.publicShare}
-            onChange={(event) => handleChange('publicShare', event.target.checked)}
-            info={T('settings.public_share_tooltip')}
-          />
           <SettingsCheckbox
             label={T('settings.dark_theme')}
             isChecked={settings.theme === 'dark'}

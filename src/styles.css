@@ -792,6 +792,38 @@ video {
   top: 1rem;
 }
 
+.top-1 {
+  top: 0.25rem;
+}
+
+.left-0\.5 {
+  left: 0.125rem;
+}
+
+.top-0\.5 {
+  top: 0.125rem;
+}
+
+.left-10 {
+  left: 2.5rem;
+}
+
+.left-8 {
+  left: 2rem;
+}
+
+.left-\[1\.625rem\] {
+  left: 1.625rem;
+}
+
+.left-12 {
+  left: 3rem;
+}
+
+.left-\[2\.75rem\] {
+  left: 2.75rem;
+}
+
 .-z-10 {
   z-index: -10;
 }
@@ -1136,6 +1168,10 @@ video {
   height: 100vh;
 }
 
+.h-9 {
+  height: 2.25rem;
+}
+
 .max-h-\[90dvh\] {
   max-height: 90dvh;
 }
@@ -1461,6 +1497,12 @@ video {
 
 .cursor-wait {
   cursor: wait;
+}
+
+.select-none {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 .snap-x {
@@ -2324,6 +2366,16 @@ video {
   background-color: rgb(202 138 4 / var(--tw-bg-opacity));
 }
 
+.bg-\[\#E5E7EB\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+}
+
+.bg-primaryHover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(101 70 195 / var(--tw-bg-opacity));
+}
+
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -2537,6 +2589,14 @@ video {
   fill: #facc15;
 }
 
+.stroke-current {
+  stroke: currentColor;
+}
+
+.stroke-white {
+  stroke: #fff;
+}
+
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
@@ -2662,6 +2722,11 @@ video {
 .py-\[1\.15rem\] {
   padding-top: 1.15rem;
   padding-bottom: 1.15rem;
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 .pb-1\.5 {
@@ -3186,6 +3251,10 @@ video {
   opacity: 0.75;
 }
 
+.opacity-100 {
+  opacity: 1;
+}
+
 .mix-blend-lighten {
   mix-blend-mode: lighten;
 }
@@ -3339,6 +3408,12 @@ video {
 
 .transition-transform {
   transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-\[left\] {
+  transition-property: left;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -4414,6 +4489,11 @@ html.dark *::-webkit-scrollbar-thumb {
 
 .group:enabled:hover .group-enabled\:group-hover\:text-inherit {
   color: inherit;
+}
+
+.peer:checked ~ .peer-checked\:translate-x-full {
+  --tw-translate-x: 100%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .peer:checked ~ .peer-checked\:bg-primary {
