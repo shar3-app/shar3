@@ -40,7 +40,7 @@ const NetworkSwitch = () => {
 
   return (
     <>
-      <label className="flex cursor-pointer select-none items-center">
+      <label id="share-scope" className="flex cursor-pointer select-none items-center">
         <div className="relative">
           <input
             type="checkbox"

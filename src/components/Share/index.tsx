@@ -132,7 +132,7 @@ const Share = () => {
   };
 
   return !shared ? (
-    <div className="flex gap-6">
+    <div id="share-area" className="flex gap-6">
       <Dropzone T={T} openExplorer={openExplorer} checkConnection={checkConnection} />
       <Dropzone
         T={T}

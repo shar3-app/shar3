@@ -1,5 +1,6 @@
 import ContextMenu from '@components/ContextMenu';
-import HistoryTable from '@components/HistoryTable';
+import HistoryList from '@components/HistoryList';
+import Joyride from '@components/Joyride';
 import Loader from '@components/Loader';
 import Nav from '@components/Nav';
 import SettingsModal from '@components/Settings';
@@ -10,7 +11,7 @@ function App() {
   // TODO splashscreen
   return (
     <>
-      <Toaster position="top-center" />
+      <Toaster position="top-center" closeButton />
       <Loader />
       <ContextMenu />
 
@@ -20,10 +21,11 @@ function App() {
       <main className="space-y-6 pb-20">
         <Share />
 
-        <HistoryTable />
+        <HistoryList />
       </main>
 
       <SettingsModal />
+      <Joyride />
     </>
   );
 }

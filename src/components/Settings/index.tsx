@@ -89,7 +89,7 @@ const SettingsModal = () => {
         header: {
           base: 'flex items-center justify-between rounded-t border-b p-5 dark:border-gray-600',
           close: {
-            base: 'ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white [outline:none] border-none'
+            base: 'ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white !outline-0 border-none'
           }
         }
       }}

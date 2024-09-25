@@ -8,8 +8,9 @@ import { from } from '@utils';
 import { MouseEvent as ME, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useT } from 'talkr';
+import HistoryRow from './HistoryRow';
 
-const HistoryTable = () => {
+const HistoryList = () => {
   const { T, locale } = useT();
   const [visibleItems, setVisibleItems] = useState(5);
   const osType = useOsType();
@@ -86,7 +87,7 @@ const HistoryTable = () => {
 
   return (
     !!history.length && (
-      <div className="rounded-lg border-2 border-gray-200 dark:border-gray-700">
+      <div id="share-history" className="rounded-lg border-2 border-gray-200 dark:border-gray-700">
         <ul className="flex text-sm text-left text-gray-600 dark:text-gray-400 w-full flex-col">
           {history.slice(0, visibleItems).map((historyItem, idx) => {
             return (
@@ -130,19 +131,14 @@ const HistoryTable = () => {
               </li>
             );
           })}
-          {history.length > visibleItems ? (
-            <li
-              tabIndex={1}
+          {history.length > visibleItems && (
+            <HistoryRow
               key={history.length + 1}
-              className={`flex py-[1.15rem] border-b last:border-b-0 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer last:rounded-b-md first:rounded-t-md ${
-                visibleItems % 2 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-gray-100 dark:bg-gray-800'
-              }`}
+              position={visibleItems % 2 ? 'even' : 'odd'}
               onClick={loadMore}
             >
               <p className="w-full text-center font-medium">Load more...</p>
-            </li>
-          ) : (
-            <></>
+            </HistoryRow>
           )}
         </ul>
       </div>
@@ -150,4 +146,4 @@ const HistoryTable = () => {
   );
 };
 
-export default HistoryTable;
+export default HistoryList;

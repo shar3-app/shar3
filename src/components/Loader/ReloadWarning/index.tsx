@@ -17,6 +17,9 @@ const ReloadWarning = () => (
     </div>
     <div data-content>
       <div data-title>
+        {
+          // TODO translate
+        }
         Looks like something went wrong.{' '}
         <span className="underline cursor-pointer" onClick={async () => window.location.reload()}>
           Click to reload the app.

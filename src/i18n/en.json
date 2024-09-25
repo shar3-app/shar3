@@ -7,7 +7,7 @@
   },
   "generic": {
     "or": "or",
-    "click_select": "Click or drag",
+    "click_select": "Click or drop",
     "or_drag": {
       "directory": " to share a folder",
       "file": " to share a file"
@@ -43,6 +43,21 @@
     "share_warning_ok": "Yes",
     "share_warning_cancel": "No, cancel",
     "settings": "Settings"
+  },
+  "joyride": {
+    "start": "Start tour",
+    "skip": "Skip",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish tour",
+    "welcome": "Thanks for downloading the app, you can take a quick __steps__ steps tour to understand how easy it is to share your files.",
+    "steps": {
+      "1": "You can share files and folders by using these inputs or their shortcuts",
+      "2": "This switch toggles between private and public sharing scope",
+      "2_1": "<u><b>Private:</b></u> will share your files only inside your wifi or local network",
+      "2_2": "<u><b>Public:</b></u> allows you to share within whole internet, making it accesible for anyone",
+      "3": "This is your history, by right clicking on them you can re-share, open the folder or delete a history entry"
+    }
   },
   "toasts": {
     "no_connection": "Not connected to network, you can not share files",
