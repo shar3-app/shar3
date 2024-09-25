@@ -1,19 +1,40 @@
-import { Events } from '@shared';
+import { useLocalStorage } from '@hooks';
+import { Events, LocalStorage } from '@shared';
+import { confirm } from '@tauri-apps/api/dialog';
 import { emit } from '@tauri-apps/api/event';
 import { getSettings } from '@utils';
 import { useState } from 'react';
+import { useT } from 'talkr';
 
 const NetworkSwitch = () => {
+  const { T } = useT();
+  const { getValue: isSharing } = useLocalStorage(LocalStorage.Sharing, false);
   const [isChecked, setIsChecked] = useState(getSettings()?.publicShare ?? false);
 
   const handleCheckboxChange = () => {
-    // TODO tauri confirm in case something is being shared
-    emit(Events.UpdateSettings, {
-      publicShare: !isChecked
-    }).then(() => {
-      setIsChecked((checked) => {
-        return !checked;
+    if (isSharing()) {
+      confirm(T('nav.share_warning_message'), {
+        title: T('nav.share_warning_title'),
+        okLabel: T('nav.share_warning_ok'),
+        cancelLabel: T('nav.share_warning_cancel'),
+        type: 'warning'
+      }).then((value) => {
+        if (value) {
+          emit(Events.StopSharing);
+          updateCheckbox();
+        }
       });
+    } else {
+      updateCheckbox();
+    }
+  };
+
+  const updateCheckbox = () => {
+    setIsChecked((checked) => {
+      emit(Events.UpdateSettings, {
+        publicShare: !checked
+      });
+      return !checked;
     });
   };
 

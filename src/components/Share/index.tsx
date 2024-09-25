@@ -1,7 +1,7 @@
-import { useConnection } from '@hooks';
-import { Events, LoaderState, SharePayload } from '@shared';
+import { useConnection, useLocalStorage } from '@hooks';
+import { Events, LoaderState, LocalStorage, SharePayload } from '@shared';
 import { open } from '@tauri-apps/api/dialog';
-import { emit, listen } from '@tauri-apps/api/event';
+import { emit, listen, TauriEvent } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/tauri';
 import { appWindow } from '@tauri-apps/api/window';
 import { getSettings, noConnectionError } from '@utils';
@@ -12,18 +12,36 @@ import Shared from './Shared';
 
 const Share = () => {
   const [shared, setShared] = useState<string | null>(null);
+  const { setValue: setIsSharing } = useLocalStorage(LocalStorage.Sharing, false);
   const isConnected = useConnection();
   const { T } = useT();
 
   useEffect(() => {
     const listenShare = listen<string>(Events.Share, ({ payload }) => serve(payload));
-    const listenDrop = listen<string>('tauri://file-drop', ({ payload: [path] }) =>
-      appWindow.setFocus().then(() => serve(path))
+    const listenDrop = listen<string>(TauriEvent.WINDOW_FILE_DROP, ({ payload: [path] }) =>
+      serve(path)
     );
+    const listenHoverDrop = listen<string>(
+      TauriEvent.WINDOW_FILE_DROP_HOVER,
+      async () => await appWindow.setFocus()
+    );
+    const listenClose = listen(TauriEvent.WINDOW_CLOSE_REQUESTED, () => {
+      setIsSharing(false);
+      stopSharing();
+    });
+    const listenStop = listen(Events.StopSharing, () => {
+      setIsSharing(false);
+      stopSharing();
+    });
+
+    setIsSharing(!!shared);
 
     return () => {
       listenShare.then((f) => f());
+      listenStop.then((f) => f());
       listenDrop.then((f) => f());
+      listenHoverDrop.then((f) => f());
+      listenClose.then((f) => f());
     };
   }, []);
 
@@ -57,6 +75,7 @@ const Share = () => {
     invoke<boolean>('stop')
       .then((status) => {
         if (status) {
+          setIsSharing(false);
           setShared(null);
         } else {
           // TODO error
@@ -89,6 +108,7 @@ const Share = () => {
         isPublic: getSettings()?.publicShare
       })
         .then((payload) => {
+          setIsSharing(true);
           updateSharedUrl(payload);
         })
         // TODO add catch
