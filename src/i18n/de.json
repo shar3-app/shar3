@@ -7,55 +7,60 @@
   },
   "generic": {
     "or": "oder",
-    "click_select": "Klicken zum Auswählen",
-    "or_drag": " oder ziehen Sie eine Datei/Ordner hierher",
-    "share_mail_subject": "[Shar3]%20Ich%20teile%20einige%20Dateien%20mit%20Ihnen",
-    "share_url": "Hallo!%20Ich%20teile%20einige%20Dateien%20mit%20Ihnen%20über%20die%20Shar3%20App%3A",
-    "navigate_url": "Klicken Sie, um zur URL zu navigieren",
+    "click_select": "Klicken oder ziehen",
+    "or_drag": {
+      "directory": " um einen Ordner zu teilen",
+      "file": " um eine Datei zu teilen"
+    },
+    "share_mail_subject": "[Shar3]%20Ich%20teile%20einige%20Dateien%20mit%20dir",
+    "share_url": "Hallo!%20Ich%20teile%20einige%20Dateien%20mit%20dir%20über%20die%20Shar3%20App%3A",
+    "navigate_url": "Klicken, um zur URL zu navigieren",
     "share": "Teilen auf:",
     "copy_url": "URL kopieren",
     "copy_image": "Bild kopieren",
     "qr_copied": {
-      "loading": "QR-Code wird in die Zwischenablage kopiert...",
-      "success": "QR-Code-Bild erfolgreich kopiert!",
-      "error": "QR-Code-Bild konnte nicht kopiert werden. Bitte versuchen Sie es erneut."
+      "loading": "QR wird in die Zwischenablage kopiert...",
+      "success": "QR-Bild erfolgreich kopiert!",
+      "error": "QR-Bild konnte nicht kopiert werden. Bitte versuche es erneut."
     },
     "url_copied": {
       "loading": "URL wird in die Zwischenablage kopiert...",
       "success": "URL erfolgreich kopiert!",
-      "error": "URL konnte nicht kopiert werden. Bitte versuchen Sie es erneut."
+      "error": "URL konnte nicht kopiert werden. Bitte versuche es erneut."
     },
-    "stop_share": "Teilen stoppen"
+    "stop_share": "Teilen beenden"
   },
   "contextmenu": {
     "reshare": "Erneut teilen",
     "open_folder": "Ordner öffnen",
-    "delete_entry": "Aus Verlauf löschen"
+    "delete_entry": "Aus dem Verlauf löschen"
   },
   "nav": {
-    "report_bug": "Fehler melden",
-    "new_item": "Neu hochladen",
+    "report_bug": "Problem melden",
+    "share": "Öffentlich teilen",
+    "share_warning_title": "Sie teilen gerade!",
+    "share_warning_message": "Das aktuelle Teilen wird abgebrochen, wenn Sie den Freigabebereich ändern. Sind Sie sicher?",
+    "share_warning_ok": "Ja",
+    "share_warning_cancel": "Nein, abbrechen",
     "settings": "Einstellungen"
   },
   "toasts": {
-    "no_connection": "Keine Netzwerkverbindung, Sie können keine Dateien teilen",
-    "delete_entry": "Verlaufs Eintrag gelöscht für '__filename__'"
+    "no_connection": "Keine Netzwerkverbindung, Dateien können nicht geteilt werden",
+    "delete_entry": "Verlaufeintrag für '__filename__' gelöscht"
   },
   "settings": {
     "title": "Einstellungen",
     "general_settings": "Allgemeine Einstellungen",
-    "public_share": "Öffentliches Teilen",
-    "public_share_tooltip": "Wenn aktiviert, werden Dateien über eine öffentliche URL außerhalb Ihres lokalen Netzwerks geteilt, nützlich, wenn Sie Dinge mit Ihren Freunden teilen möchten ✨",
     "dark_theme": "Dunkles Thema",
-    "auth": "Authentifizierungsdaten",
+    "auth": "Authentifizierungsdaten verwenden",
     "clean_history": "Verlauf löschen",
-    "clean_history_success": "Verlauf wurde gelöscht",
-    "clean_history_confirm": "Drücken Sie die Schaltfläche erneut, um die Aktion zu bestätigen",
+    "clean_history_success": "Der Verlauf wurde gelöscht",
+    "clean_history_confirm": "Drücken Sie erneut den Button, um die Aktion zu bestätigen",
     "auth_username": "Benutzername",
     "auth_password": "Passwort",
-    "auth_warning": "Sie müssen sowohl Benutzernamen als auch Passwort hinzufügen, damit die Authentifizierung aktiviert wird",
+    "auth_warning": "Sie müssen sowohl Benutzername als auch Passwort hinzufügen, um die Authentifizierung zu aktivieren",
     "other_settings": "Weitere Einstellungen",
-    "shortcuts": "Kurzbefehle",
+    "shortcuts": "Tastenkombinationen",
     "language": "Sprache"
   }
 }

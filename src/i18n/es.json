@@ -7,55 +7,60 @@
   },
   "generic": {
     "or": "o",
-    "click_select": "Click para seleccionar",
-    "or_drag": " o arrastra un fichero",
-    "share_mail_subject": "ES: [Shar3]%20I%20am%20sharing%20with%20you%20some%20files",
-    "share_url": "ES: Hey!%20I%20am%20sharing%20with%20you%20some%20files%20from%20Shar3%20app%3A",
-    "navigate_url": "Click para navegar al enlace",
-    "share": "Compartir:",
-    "copy_url": "Copiar enlace",
+    "click_select": "Haz clic o arrastra",
+    "or_drag": {
+      "directory": " para compartir una carpeta",
+      "file": " para compartir un archivo"
+    },
+    "share_mail_subject": "[Shar3]%20Estoy%20compartiendo%20contigo%20algunos%20archivos",
+    "share_url": "¡Hola!%20Estoy%20compartiendo%20contigo%20algunos%20archivos%20usando%20la%20app%20Shar3%3A",
+    "navigate_url": "Haz clic para navegar a la URL",
+    "share": "Compartir en:",
+    "copy_url": "Copiar URL",
     "copy_image": "Copiar imagen",
     "qr_copied": {
       "loading": "Copiando QR al portapapeles...",
-      "success": "¡Imagen del QR copiada al portapapeles!",
-      "error": "La imagen del QR no pudo copiarse. Por favor inténtelo de nuevo."
+      "success": "¡Imagen QR copiada exitosamente!",
+      "error": "No se pudo copiar la imagen QR. Por favor, inténtalo de nuevo."
     },
     "url_copied": {
-      "loading": "Copiando enlace al portapapeles...",
-      "success": "¡Enlace copiado al portapapeles!",
-      "error": "El enlace no pudo copiarse. Por favor inténtelo de nuevo."
+      "loading": "Copiando URL al portapapeles...",
+      "success": "¡URL copiada exitosamente!",
+      "error": "No se pudo copiar la URL. Por favor, inténtalo de nuevo."
     },
-    "stop_share": "Parar de compartir"
+    "stop_share": "Dejar de compartir"
   },
   "contextmenu": {
-    "reshare": "Compartir",
+    "reshare": "Volver a compartir",
     "open_folder": "Abrir carpeta",
-    "delete_entry": "Borrar del historial"
+    "delete_entry": "Eliminar del historial"
   },
   "nav": {
-    "report_bug": "Reportar bug",
-    "new_item": "Subir nuevo",
-    "settings": "Opciones"
+    "report_bug": "Reportar un problema",
+    "share": "Compartir públicamente",
+    "share_warning_title": "¡Estás compartiendo actualmente!",
+    "share_warning_message": "El compartir actual será cancelado si cambias el alcance de la compartición. ¿Estás seguro?",
+    "share_warning_ok": "Sí",
+    "share_warning_cancel": "No, cancelar",
+    "settings": "Configuración"
   },
   "toasts": {
-    "no_connection": "Sin conexión a internet, no se pueden compartir ficheros",
-    "delete_entry": "Histórico eliminado para el fichero '__filename__'"
+    "no_connection": "No estás conectado a la red, no puedes compartir archivos",
+    "delete_entry": "Entrada del historial eliminada para '__filename__'"
   },
   "settings": {
     "title": "Configuración",
-    "general_settings": "Opciones generales",
-    "public_share": "Compartir publicamente",
-    "public_share_tooltip": "Si lo activas tus ficheros se compartirán fuera de la red local, accesible desde cualquier lugar. Muy útil si quieres compartir cosas con tus amigos ✨",
+    "general_settings": "Configuración general",
     "dark_theme": "Tema oscuro",
-    "auth": "Autentificación",
-    "clean_history": "Limpiar el historial",
-    "clean_history_success": "El historial se ha limpiado",
-    "clean_history_confirm": "Haz click de nuevo para confirmar el borrado del historial",
+    "auth": "Usar credenciales de autenticación",
+    "clean_history": "Limpiar historial",
+    "clean_history_success": "El historial ha sido borrado",
+    "clean_history_confirm": "Presiona el botón de nuevo para confirmar la acción",
     "auth_username": "Nombre de usuario",
     "auth_password": "Contraseña",
-    "auth_warning": "Es obligatorio añadir un usuario y una contraseña",
-    "other_settings": "Otras opciones",
-    "shortcuts": "Atajos de teclado",
+    "auth_warning": "Necesitas agregar tanto el nombre de usuario como la contraseña para habilitar la autenticación",
+    "other_settings": "Otras configuraciones",
+    "shortcuts": "Atajos",
     "language": "Idioma"
   }
 }

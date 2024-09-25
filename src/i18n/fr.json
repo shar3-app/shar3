@@ -7,18 +7,21 @@
   },
   "generic": {
     "or": "ou",
-    "click_select": "Cliquez pour sélectionner",
-    "or_drag": " ou faites glisser un fichier/dossier ici",
-    "share_mail_subject": "[Shar3]%20Je%20vous%20partage%20certains%20fichiers",
-    "share_url": "Salut !%20Je%20vous%20partage%20certains%20fichiers%20en%20utilisant%20l%27application%20Shar3%20:%20",
+    "click_select": "Cliquez ou faites glisser",
+    "or_drag": {
+      "directory": " pour partager un dossier",
+      "file": " pour partager un fichier"
+    },
+    "share_mail_subject": "[Shar3]%20Je%20partage%20avec%20vous%20quelques%20fichiers",
+    "share_url": "Salut!%20Je%20partage%20avec%20vous%20quelques%20fichiers%20en%20utilisant%20l'application%20Shar3%3A",
     "navigate_url": "Cliquez pour naviguer vers l'URL",
     "share": "Partager sur :",
     "copy_url": "Copier l'URL",
     "copy_image": "Copier l'image",
     "qr_copied": {
-      "loading": "Copie du QR code dans le presse-papiers...",
-      "success": "Image du QR code copiée avec succès !",
-      "error": "L'image du QR code n'a pas pu être copiée. Veuillez réessayer."
+      "loading": "Copie du QR dans le presse-papiers...",
+      "success": "Image QR copiée avec succès !",
+      "error": "L'image QR n'a pas pu être copiée. Veuillez réessayer."
     },
     "url_copied": {
       "loading": "Copie de l'URL dans le presse-papiers...",
@@ -28,32 +31,34 @@
     "stop_share": "Arrêter le partage"
   },
   "contextmenu": {
-    "reshare": "Repartager",
+    "reshare": "Partager à nouveau",
     "open_folder": "Ouvrir le dossier",
     "delete_entry": "Supprimer de l'historique"
   },
   "nav": {
-    "report_bug": "Signaler un bug",
-    "new_item": "Télécharger un nouveau",
+    "report_bug": "Signaler un problème",
+    "share": "Partage public",
+    "share_warning_title": "Vous partagez actuellement !",
+    "share_warning_message": "Le partage en cours sera annulé si vous changez la portée du partage. Êtes-vous sûr ?",
+    "share_warning_ok": "Oui",
+    "share_warning_cancel": "Non, annuler",
     "settings": "Paramètres"
   },
   "toasts": {
     "no_connection": "Pas de connexion réseau, vous ne pouvez pas partager de fichiers",
-    "delete_entry": "Entrée de l'historique supprimée pour '__filename__'"
+    "delete_entry": "Entrée d'historique supprimée pour '__filename__'"
   },
   "settings": {
     "title": "Paramètres",
     "general_settings": "Paramètres généraux",
-    "public_share": "Partage public",
-    "public_share_tooltip": "Lorsque cette option est activée, les fichiers seront partagés en dehors de votre réseau local via une URL publique, pratique si vous souhaitez partager des choses avec vos amis ✨",
     "dark_theme": "Thème sombre",
-    "auth": "Identifiants de connexion",
+    "auth": "Utiliser des identifiants d'authentification",
     "clean_history": "Effacer l'historique",
     "clean_history_success": "L'historique a été effacé",
     "clean_history_confirm": "Appuyez à nouveau sur le bouton pour confirmer l'action",
     "auth_username": "Nom d'utilisateur",
     "auth_password": "Mot de passe",
-    "auth_warning": "Vous devez ajouter à la fois un nom d'utilisateur et un mot de passe pour que l'authentification soit activée",
+    "auth_warning": "Vous devez ajouter à la fois le nom d'utilisateur et le mot de passe pour activer l'authentification",
     "other_settings": "Autres paramètres",
     "shortcuts": "Raccourcis",
     "language": "Langue"

@@ -38,6 +38,10 @@
   "nav": {
     "report_bug": "Report an issue",
     "share": "Public share",
+    "share_warning_title": "You are currently sharing!",
+    "share_warning_message": "The current sharing will be cancelled as you change the sharing scope. Are you share?",
+    "share_warning_ok": "Yes",
+    "share_warning_cancel": "No, cancel",
     "settings": "Settings"
   },
   "toasts": {
