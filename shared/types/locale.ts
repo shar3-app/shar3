@@ -5,4 +5,5 @@ type TParams = {
 
 export type Translator = (key: string, params?: TParams) => string;
 
-export type Locale = 'en' | 'es' | 'de' | 'fr';
+export const Locales = ['en', 'es', 'de', 'fr'] as const;
+export type Locale = (typeof Locales)[number];

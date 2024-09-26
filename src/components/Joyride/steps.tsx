@@ -1,3 +1,4 @@
+import LanguageSelector from '@components/Settings/LanguageSelector';
 import { Translator } from '@shared';
 import { Step } from 'react-joyride';
 import Logo from '../../icon.png';
@@ -17,6 +18,10 @@ export const steps: (T: Translator) => Step[] = (T) => [
               steps: 3
             })}
           </p>
+          <div className="flex flex-col gap-1 items-center mt-5">
+            <span className="mb-1">{T('joyride.welcome_language')}</span>
+            <LanguageSelector position={'bottom'} onChange={(a) => console.log(a)} />
+          </div>
         </main>
       </div>
     ),

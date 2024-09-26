@@ -2,7 +2,7 @@
   "locales": {
     "en": "English",
     "es": "Spanish",
-    "de": "Deutch",
+    "de": "German",
     "fr": "French"
   },
   "generic": {
@@ -12,21 +12,21 @@
       "directory": " to share a folder",
       "file": " to share a file"
     },
-    "share_mail_subject": "[Shar3]%20I%20am%20sharing%20with%20you%20some%20files",
-    "share_url": "Hey!%20I%20am%20sharing%20with%20you%20some%20files%using%20Shar3%20app%3A",
-    "navigate_url": "Click to navigate to url",
+    "share_mail_subject": "[Shar3] I am sharing some files with you",
+    "share_url": "Hey! I am sharing some files with you using the Shar3 app:",
+    "navigate_url": "Click to navigate to the URL",
     "share": "Share on:",
-    "copy_url": "Copy url",
+    "copy_url": "Copy URL",
     "copy_image": "Copy image",
     "qr_copied": {
       "loading": "Copying QR to clipboard...",
-      "success": "QR image copied successfuly!",
+      "success": "QR image copied successfully!",
       "error": "QR image could not be copied. Please try again."
     },
     "url_copied": {
-      "loading": "Copying url to clipboard...",
-      "success": "Url copied successfuly!",
-      "error": "Url could not be copied. Please try again."
+      "loading": "Copying URL to clipboard...",
+      "success": "URL copied successfully!",
+      "error": "URL could not be copied. Please try again."
     },
     "stop_share": "Stop sharing"
   },
@@ -39,7 +39,7 @@
     "report_bug": "Report an issue",
     "share": "Public share",
     "share_warning_title": "You are currently sharing!",
-    "share_warning_message": "The current sharing will be cancelled as you change the sharing scope. Are you share?",
+    "share_warning_message": "The current sharing will be canceled if you change the sharing scope. Are you sure?",
     "share_warning_ok": "Yes",
     "share_warning_cancel": "No, cancel",
     "settings": "Settings"
@@ -50,31 +50,32 @@
     "next": "Next",
     "back": "Back",
     "finish": "Finish tour",
-    "welcome": "Thanks for downloading the app, you can take a quick __steps__ steps tour to understand how easy it is to share your files.",
+    "welcome": "Thank you for downloading the app! You can take a quick __steps__-step tour to understand how easy it is to share your files.",
+    "welcome_language": "Select your language:",
     "steps": {
-      "1": "You can share files and folders by using these inputs or their shortcuts",
-      "2": "This switch toggles between private and public sharing scope",
-      "2_1": "<u><b>Private:</b></u> will share your files only inside your wifi or local network",
-      "2_2": "<u><b>Public:</b></u> allows you to share within whole internet, making it accesible for anyone",
-      "3": "This is your history, by right clicking on them you can re-share, open the folder or delete a history entry"
+      "1": "You can share files and folders using these inputs or their shortcuts",
+      "2": "This switch toggles between private and public sharing scopes",
+      "2_1": "<u><b>Private:</b></u> Will share your files only within your Wi-Fi or local network",
+      "2_2": "<u><b>Public:</b></u> Allows sharing over the internet, making it accessible to anyone",
+      "3": "This is your history. By right-clicking on an entry, you can reshare, open the folder, or delete a history entry."
     }
   },
   "toasts": {
-    "no_connection": "Not connected to network, you can not share files",
-    "delete_entry": "History entry deleted for '__filename__'"
+    "no_connection": "Not connected to a network, sharing is unavailable.",
+    "delete_entry": "History entry '__filename__' deleted."
   },
   "settings": {
     "title": "Settings",
-    "general_settings": "General settings",
+    "general_settings": "General Settings",
     "dark_theme": "Dark theme",
-    "auth": "Use auth credentials",
+    "auth": "Use authentication credentials",
     "clean_history": "Clear history",
-    "clean_history_success": "History has been cleared",
-    "clean_history_confirm": "Press the button again to confirm the action",
-    "auth_username": "User name",
+    "clean_history_success": "History has been cleared.",
+    "clean_history_confirm": "Press the button again to confirm this action.",
+    "auth_username": "Username",
     "auth_password": "Password",
-    "auth_warning": "You need to add both username and password for auth to be enabled",
-    "other_settings": "Other settings",
+    "auth_warning": "You need to provide both username and password to enable authentication.",
+    "other_settings": "Other Settings",
     "shortcuts": "Shortcuts",
     "language": "Language"
   }

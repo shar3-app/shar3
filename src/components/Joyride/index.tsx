@@ -1,3 +1,4 @@
+import { useLocalStorage } from '@hooks';
 import { Events, History } from '@shared';
 import { emit } from '@tauri-apps/api/event';
 import {
@@ -10,18 +11,18 @@ import JoyrideTooltip from './JoyrideTooltip';
 import { steps } from './steps';
 
 enum JoyrideSteps {
+  Welcome,
   ShareArea,
   ShareScope,
   ShareHistory
 }
 
 const Joyride = () => {
+  const { value: joyrideState, setValue: setJoyrideState } = useLocalStorage('joyride', false);
   const { T } = useT();
 
   const handleJoyride = ({ action, index }: CallBackProps) => {
-    console.log(action, index);
-
-    if (action === JoyrideActions.START && index === JoyrideSteps.ShareArea) {
+    if (action === JoyrideActions.START && index === JoyrideSteps.Welcome) {
       const currentDate = new Date();
       const dummyHistory: History = [
         {
@@ -38,21 +39,24 @@ const Joyride = () => {
       emit(Events.SetHistory, dummyHistory);
     } else if (action === JoyrideActions.RESET) {
       emit(Events.SetHistory, []);
+      setJoyrideState(true);
     }
   };
 
   return (
-    <JoyrideComponent
-      continuous
-      scrollToFirstStep
-      run={true}
-      steps={steps(T)}
-      callback={handleJoyride}
-      tooltipComponent={JoyrideTooltip}
-      floaterProps={{
-        hideArrow: true
-      }}
-    />
+    !joyrideState && (
+      <JoyrideComponent
+        continuous
+        scrollToFirstStep
+        run={true}
+        steps={steps(T)}
+        callback={handleJoyride}
+        tooltipComponent={JoyrideTooltip}
+        floaterProps={{
+          hideArrow: true
+        }}
+      />
+    )
   );
 };
 

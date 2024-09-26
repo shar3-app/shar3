@@ -12,41 +12,57 @@
       "directory": " um einen Ordner zu teilen",
       "file": " um eine Datei zu teilen"
     },
-    "share_mail_subject": "[Shar3]%20Ich%20teile%20einige%20Dateien%20mit%20dir",
-    "share_url": "Hallo!%20Ich%20teile%20einige%20Dateien%20mit%20dir%20über%20die%20Shar3%20App%3A",
+    "share_mail_subject": "[Shar3] Ich teile einige Dateien mit dir",
+    "share_url": "Hallo! Ich teile einige Dateien mit dir über die Shar3-App:",
     "navigate_url": "Klicken, um zur URL zu navigieren",
     "share": "Teilen auf:",
     "copy_url": "URL kopieren",
     "copy_image": "Bild kopieren",
     "qr_copied": {
-      "loading": "QR wird in die Zwischenablage kopiert...",
+      "loading": "QR-Code wird in die Zwischenablage kopiert...",
       "success": "QR-Bild erfolgreich kopiert!",
-      "error": "QR-Bild konnte nicht kopiert werden. Bitte versuche es erneut."
+      "error": "Das QR-Bild konnte nicht kopiert werden. Bitte versuche es erneut."
     },
     "url_copied": {
       "loading": "URL wird in die Zwischenablage kopiert...",
       "success": "URL erfolgreich kopiert!",
-      "error": "URL konnte nicht kopiert werden. Bitte versuche es erneut."
+      "error": "Die URL konnte nicht kopiert werden. Bitte versuche es erneut."
     },
     "stop_share": "Teilen beenden"
   },
   "contextmenu": {
     "reshare": "Erneut teilen",
     "open_folder": "Ordner öffnen",
-    "delete_entry": "Aus dem Verlauf löschen"
+    "delete_entry": "Aus Verlauf löschen"
   },
   "nav": {
     "report_bug": "Problem melden",
     "share": "Öffentlich teilen",
-    "share_warning_title": "Sie teilen gerade!",
-    "share_warning_message": "Das aktuelle Teilen wird abgebrochen, wenn Sie den Freigabebereich ändern. Sind Sie sicher?",
+    "share_warning_title": "Du teilst gerade!",
+    "share_warning_message": "Das aktuelle Teilen wird abgebrochen, wenn du den Freigabebereich änderst. Bist du sicher?",
     "share_warning_ok": "Ja",
     "share_warning_cancel": "Nein, abbrechen",
     "settings": "Einstellungen"
   },
+  "joyride": {
+    "start": "Tour starten",
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "back": "Zurück",
+    "finish": "Tour beenden",
+    "welcome": "Danke, dass du die App heruntergeladen hast! Du kannst eine kurze Tour in __steps__ Schritten machen, um zu verstehen, wie einfach es ist, deine Dateien zu teilen.",
+    "welcome_language": "Wähle deine Sprache:",
+    "steps": {
+      "1": "Du kannst Dateien und Ordner über diese Felder oder deren Tastenkürzel teilen.",
+      "2": "Dieser Schalter wechselt zwischen privatem und öffentlichem Freigabebereich.",
+      "2_1": "<u><b>Privat:</b></u> Teilt deine Dateien nur innerhalb deines WLANs oder lokalen Netzwerks.",
+      "2_2": "<u><b>Öffentlich:</b></u> Ermöglicht das Teilen über das Internet, wodurch es für jeden zugänglich wird.",
+      "3": "Dies ist dein Verlauf. Durch Rechtsklick auf einen Eintrag kannst du ihn erneut teilen, den Ordner öffnen oder den Eintrag aus dem Verlauf löschen."
+    }
+  },
   "toasts": {
-    "no_connection": "Keine Netzwerkverbindung, Dateien können nicht geteilt werden",
-    "delete_entry": "Verlaufeintrag für '__filename__' gelöscht"
+    "no_connection": "Keine Netzwerkverbindung, Teilen nicht verfügbar.",
+    "delete_entry": "Verlaufeintrag '__filename__' gelöscht."
   },
   "settings": {
     "title": "Einstellungen",
@@ -54,13 +70,13 @@
     "dark_theme": "Dunkles Thema",
     "auth": "Authentifizierungsdaten verwenden",
     "clean_history": "Verlauf löschen",
-    "clean_history_success": "Der Verlauf wurde gelöscht",
-    "clean_history_confirm": "Drücken Sie erneut den Button, um die Aktion zu bestätigen",
+    "clean_history_success": "Der Verlauf wurde gelöscht.",
+    "clean_history_confirm": "Drücke erneut auf die Schaltfläche, um die Aktion zu bestätigen.",
     "auth_username": "Benutzername",
     "auth_password": "Passwort",
-    "auth_warning": "Sie müssen sowohl Benutzername als auch Passwort hinzufügen, um die Authentifizierung zu aktivieren",
+    "auth_warning": "Du musst sowohl den Benutzernamen als auch das Passwort angeben, um die Authentifizierung zu aktivieren.",
     "other_settings": "Weitere Einstellungen",
-    "shortcuts": "Tastenkombinationen",
+    "shortcuts": "Tastenkürzel",
     "language": "Sprache"
   }
 }

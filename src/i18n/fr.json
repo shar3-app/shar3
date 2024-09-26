@@ -7,13 +7,13 @@
   },
   "generic": {
     "or": "ou",
-    "click_select": "Cliquez ou faites glisser",
+    "click_select": "Cliquez ou déposez",
     "or_drag": {
       "directory": " pour partager un dossier",
       "file": " pour partager un fichier"
     },
-    "share_mail_subject": "[Shar3]%20Je%20partage%20avec%20vous%20quelques%20fichiers",
-    "share_url": "Salut!%20Je%20partage%20avec%20vous%20quelques%20fichiers%20en%20utilisant%20l'application%20Shar3%3A",
+    "share_mail_subject": "[Shar3] Je partage des fichiers avec vous",
+    "share_url": "Salut ! Je partage des fichiers avec vous en utilisant l'application Shar3 :",
     "navigate_url": "Cliquez pour naviguer vers l'URL",
     "share": "Partager sur :",
     "copy_url": "Copier l'URL",
@@ -37,16 +37,32 @@
   },
   "nav": {
     "report_bug": "Signaler un problème",
-    "share": "Partage public",
+    "share": "Partager publiquement",
     "share_warning_title": "Vous partagez actuellement !",
-    "share_warning_message": "Le partage en cours sera annulé si vous changez la portée du partage. Êtes-vous sûr ?",
+    "share_warning_message": "Le partage en cours sera annulé si vous changez le périmètre de partage. Êtes-vous sûr ?",
     "share_warning_ok": "Oui",
     "share_warning_cancel": "Non, annuler",
     "settings": "Paramètres"
   },
+  "joyride": {
+    "start": "Commencer le tour",
+    "skip": "Passer",
+    "next": "Suivant",
+    "back": "Retour",
+    "finish": "Terminer le tour",
+    "welcome": "Merci d'avoir téléchargé l'application ! Vous pouvez suivre un tour rapide en __steps__ étapes pour comprendre à quel point il est facile de partager vos fichiers.",
+    "welcome_language": "Sélectionnez votre langue :",
+    "steps": {
+      "1": "Vous pouvez partager des fichiers et dossiers en utilisant ces champs ou leurs raccourcis.",
+      "2": "Ce commutateur permet d'alterner entre les périmètres de partage privé et public.",
+      "2_1": "<u><b>Privé :</b></u> Partagera vos fichiers uniquement au sein de votre réseau Wi-Fi ou local.",
+      "2_2": "<u><b>Public :</b></u> Permet de partager sur internet, rendant vos fichiers accessibles à tout le monde.",
+      "3": "Voici votre historique. En cliquant avec le bouton droit sur une entrée, vous pouvez partager à nouveau, ouvrir le dossier ou supprimer une entrée de l'historique."
+    }
+  },
   "toasts": {
-    "no_connection": "Pas de connexion réseau, vous ne pouvez pas partager de fichiers",
-    "delete_entry": "Entrée d'historique supprimée pour '__filename__'"
+    "no_connection": "Non connecté au réseau, le partage est indisponible.",
+    "delete_entry": "Entrée de l'historique '__filename__' supprimée."
   },
   "settings": {
     "title": "Paramètres",
@@ -54,11 +70,11 @@
     "dark_theme": "Thème sombre",
     "auth": "Utiliser des identifiants d'authentification",
     "clean_history": "Effacer l'historique",
-    "clean_history_success": "L'historique a été effacé",
-    "clean_history_confirm": "Appuyez à nouveau sur le bouton pour confirmer l'action",
+    "clean_history_success": "L'historique a été effacé.",
+    "clean_history_confirm": "Appuyez à nouveau sur le bouton pour confirmer cette action.",
     "auth_username": "Nom d'utilisateur",
     "auth_password": "Mot de passe",
-    "auth_warning": "Vous devez ajouter à la fois le nom d'utilisateur et le mot de passe pour activer l'authentification",
+    "auth_warning": "Vous devez fournir à la fois un nom d'utilisateur et un mot de passe pour activer l'authentification.",
     "other_settings": "Autres paramètres",
     "shortcuts": "Raccourcis",
     "language": "Langue"

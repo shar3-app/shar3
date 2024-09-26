@@ -12,19 +12,19 @@
       "directory": " para compartir una carpeta",
       "file": " para compartir un archivo"
     },
-    "share_mail_subject": "[Shar3]%20Estoy%20compartiendo%20contigo%20algunos%20archivos",
-    "share_url": "¡Hola!%20Estoy%20compartiendo%20contigo%20algunos%20archivos%20usando%20la%20app%20Shar3%3A",
+    "share_mail_subject": "[Shar3] Estoy compartiendo algunos archivos contigo",
+    "share_url": "¡Hola! Estoy compartiendo algunos archivos contigo usando la aplicación Shar3:",
     "navigate_url": "Haz clic para navegar a la URL",
     "share": "Compartir en:",
     "copy_url": "Copiar URL",
     "copy_image": "Copiar imagen",
     "qr_copied": {
-      "loading": "Copiando QR al portapapeles...",
+      "loading": "Copiando el código QR al portapapeles...",
       "success": "¡Imagen QR copiada exitosamente!",
       "error": "No se pudo copiar la imagen QR. Por favor, inténtalo de nuevo."
     },
     "url_copied": {
-      "loading": "Copiando URL al portapapeles...",
+      "loading": "Copiando la URL al portapapeles...",
       "success": "¡URL copiada exitosamente!",
       "error": "No se pudo copiar la URL. Por favor, inténtalo de nuevo."
     },
@@ -36,30 +36,46 @@
     "delete_entry": "Eliminar del historial"
   },
   "nav": {
-    "report_bug": "Reportar un problema",
+    "report_bug": "Informar de un problema",
     "share": "Compartir públicamente",
-    "share_warning_title": "¡Estás compartiendo actualmente!",
-    "share_warning_message": "El compartir actual será cancelado si cambias el alcance de la compartición. ¿Estás seguro?",
+    "share_warning_title": "¡Actualmente estás compartiendo!",
+    "share_warning_message": "El compartido actual se cancelará si cambias el ámbito de compartición. ¿Estás seguro?",
     "share_warning_ok": "Sí",
     "share_warning_cancel": "No, cancelar",
-    "settings": "Configuración"
+    "settings": "Ajustes"
+  },
+  "joyride": {
+    "start": "Iniciar tour",
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "finish": "Finalizar tour",
+    "welcome": "Gracias por descargar la aplicación. Puedes hacer un recorrido rápido de __steps__ pasos para entender lo fácil que es compartir tus archivos.",
+    "welcome_language": "Selecciona tu idioma:",
+    "steps": {
+      "1": "Puedes compartir archivos y carpetas usando estos campos o sus atajos.",
+      "2": "Este interruptor alterna entre el ámbito de compartición privado y público.",
+      "2_1": "<u><b>Privado:</b></u> Compartirá tus archivos solo dentro de tu red Wi-Fi o red local.",
+      "2_2": "<u><b>Público:</b></u> Permite compartir a través de internet, haciéndolo accesible para cualquiera.",
+      "3": "Este es tu historial. Al hacer clic derecho en una entrada, puedes volver a compartir, abrir la carpeta o eliminar una entrada del historial."
+    }
   },
   "toasts": {
-    "no_connection": "No estás conectado a la red, no puedes compartir archivos",
-    "delete_entry": "Entrada del historial eliminada para '__filename__'"
+    "no_connection": "No estás conectado a una red, compartir no está disponible.",
+    "delete_entry": "Entrada del historial '__filename__' eliminada."
   },
   "settings": {
-    "title": "Configuración",
-    "general_settings": "Configuración general",
+    "title": "Ajustes",
+    "general_settings": "Ajustes generales",
     "dark_theme": "Tema oscuro",
     "auth": "Usar credenciales de autenticación",
-    "clean_history": "Limpiar historial",
-    "clean_history_success": "El historial ha sido borrado",
-    "clean_history_confirm": "Presiona el botón de nuevo para confirmar la acción",
+    "clean_history": "Borrar historial",
+    "clean_history_success": "El historial ha sido borrado.",
+    "clean_history_confirm": "Presiona el botón de nuevo para confirmar esta acción.",
     "auth_username": "Nombre de usuario",
     "auth_password": "Contraseña",
-    "auth_warning": "Necesitas agregar tanto el nombre de usuario como la contraseña para habilitar la autenticación",
-    "other_settings": "Otras configuraciones",
+    "auth_warning": "Debes proporcionar tanto el nombre de usuario como la contraseña para habilitar la autenticación.",
+    "other_settings": "Otros ajustes",
     "shortcuts": "Atajos",
     "language": "Idioma"
   }
