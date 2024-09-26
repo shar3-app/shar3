@@ -2,13 +2,16 @@ import { BugIcon, SettingsIcon } from '@icons';
 import { Events } from '@shared';
 import { emit } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/api/shell';
-import { toggleScroll } from '@utils';
+import { getSettings, toggleScroll } from '@utils';
+import { useState } from 'react';
 import { useT } from 'talkr';
 import NavItem from './NavItem';
 import NetworkSwitch from './NetworkSwitch';
 
 const Nav = () => {
   const { T } = useT();
+  const [isPublicShare, setIsPublicShare] = useState(getSettings()?.publicShare ?? false);
+
   const showSettings = () => {
     emit(Events.ShowSettings);
     toggleScroll(false);
@@ -25,8 +28,11 @@ const Nav = () => {
           <BugIcon className="w-7 h-7 text-white group-hover:text-slate-300" />
         </NavItem>
 
-        <NavItem key={'nav-share'} title={T('nav.share')}>
-          <NetworkSwitch />
+        <NavItem
+          key={'nav-share'}
+          title={isPublicShare ? T('nav.share_public') : T('nav.share_private')}
+        >
+          <NetworkSwitch isPublicShare={isPublicShare} setIsPublicShare={setIsPublicShare} />
         </NavItem>
 
         <NavItem key={'nav-settings'} title={T('nav.settings')} onClick={showSettings}>

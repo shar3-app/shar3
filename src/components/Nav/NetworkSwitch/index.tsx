@@ -2,14 +2,17 @@ import { useLocalStorage } from '@hooks';
 import { Events, LocalStorage } from '@shared';
 import { confirm } from '@tauri-apps/api/dialog';
 import { emit } from '@tauri-apps/api/event';
-import { getSettings } from '@utils';
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { useT } from 'talkr';
 
-const NetworkSwitch = () => {
+interface NetworkSwitchProps {
+  isPublicShare: boolean;
+  setIsPublicShare: Dispatch<SetStateAction<boolean>>;
+}
+
+const NetworkSwitch = ({ isPublicShare, setIsPublicShare }: NetworkSwitchProps) => {
   const { T } = useT();
   const { getValue: isSharing } = useLocalStorage(LocalStorage.Sharing, false);
-  const [isChecked, setIsChecked] = useState(getSettings()?.publicShare ?? false);
 
   const handleCheckboxChange = () => {
     if (isSharing()) {
@@ -30,11 +33,11 @@ const NetworkSwitch = () => {
   };
 
   const updateCheckbox = () => {
-    setIsChecked((checked) => {
+    setIsPublicShare((isPublic) => {
       emit(Events.UpdateSettings, {
-        publicShare: !checked
+        publicShare: !isPublic
       });
-      return !checked;
+      return !isPublic;
     });
   };
 
@@ -44,16 +47,16 @@ const NetworkSwitch = () => {
         <div className="relative">
           <input
             type="checkbox"
-            checked={isChecked}
+            checked={isPublicShare}
             onChange={handleCheckboxChange}
             className="sr-only"
           />
           <div className="block h-10 w-20 rounded-full bg-primaryHover"></div>
           <div
-            className={`bg-primary transition-[left] absolute top-1 flex h-8 w-8 items-center justify-center rounded-full ${isChecked ? 'left-[2.75rem]' : 'left-1'}`}
+            className={`bg-primary transition-[left] absolute top-1 flex h-8 w-8 items-center justify-center rounded-full ${isPublicShare ? 'left-[2.75rem]' : 'left-1'}`}
           >
             <span
-              className={`absolute transition-opacity ${isChecked ? 'opacity-0' : 'opacity-100'}`}
+              className={`absolute transition-opacity ${isPublicShare ? 'opacity-0' : 'opacity-100'}`}
             >
               <svg
                 width="20"
@@ -73,7 +76,7 @@ const NetworkSwitch = () => {
               </svg>
             </span>
             <span
-              className={`absolute transition-opacity ${isChecked ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute transition-opacity ${isPublicShare ? 'opacity-100' : 'opacity-0'}`}
             >
               <svg
                 width="20"

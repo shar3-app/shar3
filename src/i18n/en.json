@@ -37,7 +37,8 @@
   },
   "nav": {
     "report_bug": "Report an issue",
-    "share": "Public share",
+    "share_public": "Public share",
+    "share_private": "Private share",
     "share_warning_title": "You are currently sharing!",
     "share_warning_message": "The current sharing will be canceled if you change the sharing scope. Are you sure?",
     "share_warning_ok": "Yes",

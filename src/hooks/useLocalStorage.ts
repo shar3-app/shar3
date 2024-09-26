@@ -1,6 +1,7 @@
+import { LocalStorage } from '@shared';
 import { useEffect, useState } from 'react';
 
-export default <T = any>(key: string, defaultValue: T) => {
+export default <T = any>(key: LocalStorage, defaultValue: T) => {
   const getValue = (): T => {
     try {
       const saved = localStorage.getItem(key);
