@@ -3,7 +3,7 @@ import Link from '@components/Link';
 import { useTheme } from '@hooks';
 import { EmailIcon, TelegramIcon, WhatsappIcon } from '@icons';
 import { Translator } from '@shared';
-import { open } from '@tauri-apps/api/shell';
+import { open } from '@tauri-apps/plugin-shell';
 import { copyQrToClipboard, copyURLToClipboard } from '@utils';
 import { Tooltip } from 'flowbite-react';
 import QRCode from 'react-qr-code';

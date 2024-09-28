@@ -1,8 +1,8 @@
 import Kbd from '@components/Kbd';
-import { useOsType } from '@hooks';
 import { FileIcon, FolderIcon } from '@icons';
 import { Events, Settings, Translator } from '@shared';
 import { listen } from '@tauri-apps/api/event';
+import { type } from '@tauri-apps/plugin-os';
 import { useEffect, useState } from 'react';
 
 interface DropdownPlaceholderProps {
@@ -13,7 +13,6 @@ interface DropdownPlaceholderProps {
 
 const DropdownPlaceholder = ({ getSettings, T, isDirectory }: DropdownPlaceholderProps) => {
   const [showShortcuts, setShowSettings] = useState(getSettings()?.shortcuts ?? true);
-  const osType = useOsType();
 
   useEffect(() => {
     const listenSettings = listen<Settings>(Events.SettingsUpdated, ({ payload }) =>
@@ -39,7 +38,7 @@ const DropdownPlaceholder = ({ getSettings, T, isDirectory }: DropdownPlaceholde
       {showShortcuts !== false ? (
         <p className="text-center mt-3">
           <span className="text-gray-500 dark:text-gray-400">
-            {osType === 'Darwin' ? (
+            {type() === 'macos' ? (
               <>
                 <Kbd>Cmd</Kbd> + <Kbd>{isDirectory ? 'D' : 'F'}</Kbd>
               </>

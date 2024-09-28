@@ -1,9 +1,10 @@
 import { openContextMenu } from '@components/ContextMenu';
-import { useLocalStorage, useOsType, useRerenderer } from '@hooks';
+import { useLocalStorage, useRerenderer } from '@hooks';
 import { FileIcon, FolderIcon } from '@icons';
 import { Events, History, HistoryItem, Locale, LocalStorage } from '@shared';
+import { invoke } from '@tauri-apps/api/core';
 import { emit, listen } from '@tauri-apps/api/event';
-import { invoke } from '@tauri-apps/api/tauri';
+import { type } from '@tauri-apps/plugin-os';
 import { from } from '@utils';
 import { MouseEvent as ME, useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -13,7 +14,6 @@ import HistoryRow from './HistoryRow';
 const HistoryList = () => {
   const { T, locale } = useT();
   const [visibleItems, setVisibleItems] = useState(5);
-  const osType = useOsType();
   const { value: history, setValue: setHistory } = useLocalStorage<History>(
     LocalStorage.History,
     []
@@ -42,7 +42,7 @@ const HistoryList = () => {
   }, []);
 
   const getFolderName = (path: string) =>
-    path.slice(path.lastIndexOf(osType === 'Windows_NT' ? '\\' : '/') + 1);
+    path.slice(path.lastIndexOf(type() === 'windows' ? '\\' : '/') + 1);
 
   const shareHistoryItem = (item: HistoryItem) => {
     emit(Events.Share, item.path);
@@ -75,7 +75,7 @@ const HistoryList = () => {
         },
         {
           label: T('contextmenu.open_folder'),
-          action: () => invoke('open', { path: historyItem.path, osType })
+          action: () => invoke('open', { path: historyItem.path, osType: type() })
         },
         {
           label: T('contextmenu.delete_entry'),
@@ -119,9 +119,7 @@ const HistoryList = () => {
                       {getFolderName(historyItem.path)}
                     </p>
                     <span className="text-[.65rem] font-light whitespace-nowrap overflow-hidden text-ellipsis text-left rtl">
-                      {osType === 'Windows_NT'
-                        ? historyItem.path
-                        : historyItem.path.replace('/', '')}
+                      {type() === 'windows' ? historyItem.path : historyItem.path.replace('/', '')}
                     </span>
                   </div>
                 </header>

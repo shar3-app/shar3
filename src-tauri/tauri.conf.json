@@ -2,30 +2,28 @@
   "build": {
     "beforeDevCommand": "pnpm dev:web",
     "beforeBuildCommand": "pnpm build:web",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "Shar3",
-    "version": "0.1.0"
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "os": {
-        "all": true
-      },
-      "shell": {
-        "open": true
-      },
-      "dialog": {
-        "open": true,
-        "confirm": true,
-        "message": true
-      },
-      "window": {
-        "setFocus": true
-      }
+  "productName": "Shar3",
+  "mainBinaryName": "Shar3",
+  "version": "0.1.0",
+  "identifier": "dev.davru.shar3",
+  "plugins": {},
+  "app": {
+    "security": {
+      "csp": null
     },
     "windows": [
       {
@@ -37,23 +35,8 @@
         "resizable": true,
         "maximizable": false,
         "fullscreen": false,
-        "fileDropEnabled": true
+        "dragDropEnabled": true
       }
-    ],
-    "security": {
-      "csp": null
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "dev.davru.shar3",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    }
+    ]
   }
 }

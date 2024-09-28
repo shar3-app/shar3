@@ -1,14 +1,16 @@
 import { useConnection, useLocalStorage } from '@hooks';
 import { Events, LoaderState, LocalStorage, SharePayload } from '@shared';
-import { open } from '@tauri-apps/api/dialog';
+import { invoke } from '@tauri-apps/api/core';
 import { emit, listen, TauriEvent } from '@tauri-apps/api/event';
-import { invoke } from '@tauri-apps/api/tauri';
-import { appWindow } from '@tauri-apps/api/window';
+import { getCurrentWebview } from '@tauri-apps/api/webview';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { open } from '@tauri-apps/plugin-dialog';
 import { getSettings, noConnectionError } from '@utils';
 import { useEffect, useState } from 'react';
 import { useT } from 'talkr';
 import Dropzone from './Dropzone';
 import Shared from './Shared';
+const appWindow = getCurrentWebviewWindow();
 
 const Share = () => {
   const [shared, setShared] = useState<string | null>(null);
@@ -18,13 +20,6 @@ const Share = () => {
 
   useEffect(() => {
     const listenShare = listen<string>(Events.Share, ({ payload }) => serve(payload));
-    const listenDrop = listen<string>(TauriEvent.WINDOW_FILE_DROP, ({ payload: [path] }) =>
-      serve(path)
-    );
-    const listenHoverDrop = listen<string>(
-      TauriEvent.WINDOW_FILE_DROP_HOVER,
-      async () => await appWindow.setFocus()
-    );
     const listenClose = listen(TauriEvent.WINDOW_CLOSE_REQUESTED, () => {
       setIsSharing(false);
       stopSharing();
@@ -33,6 +28,13 @@ const Share = () => {
       setIsSharing(false);
       stopSharing();
     });
+    const listenDrop = getCurrentWebview().onDragDropEvent(async ({ payload }) => {
+      if (payload.type === 'over') {
+        await appWindow.setFocus();
+      } else if (payload.type === 'drop' && !!payload.paths[0]) {
+        serve(payload.paths[0]);
+      }
+    });
 
     setIsSharing(!!shared);
 
@@ -40,7 +42,6 @@ const Share = () => {
       listenShare.then((f) => f());
       listenStop.then((f) => f());
       listenDrop.then((f) => f());
-      listenHoverDrop.then((f) => f());
       listenClose.then((f) => f());
     };
   }, []);

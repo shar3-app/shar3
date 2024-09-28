@@ -1,4 +1,4 @@
-import { open } from '@tauri-apps/api/shell';
+import { open } from '@tauri-apps/plugin-shell';
 
 const Link = ({ children, href, className, ...props }: any) => {
   const onHref = () => open(href);

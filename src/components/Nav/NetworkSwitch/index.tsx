@@ -1,7 +1,7 @@
 import { useLocalStorage } from '@hooks';
 import { Events, LocalStorage } from '@shared';
-import { confirm } from '@tauri-apps/api/dialog';
 import { emit } from '@tauri-apps/api/event';
+import { confirm } from '@tauri-apps/plugin-dialog';
 import { Dispatch, SetStateAction } from 'react';
 import { useT } from 'talkr';
 
@@ -20,7 +20,7 @@ const NetworkSwitch = ({ isPublicShare, setIsPublicShare }: NetworkSwitchProps) 
         title: T('nav.share_warning_title'),
         okLabel: T('nav.share_warning_ok'),
         cancelLabel: T('nav.share_warning_cancel'),
-        type: 'warning'
+        kind: 'warning'
       }).then((value) => {
         if (value) {
           emit(Events.StopSharing);

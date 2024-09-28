@@ -1,5 +1,5 @@
 import { useLocalStorage } from '@hooks';
-import { Events, History } from '@shared';
+import { Events, History, LocalStorage } from '@shared';
 import { emit } from '@tauri-apps/api/event';
 import {
   ACTIONS as JoyrideActions,
@@ -18,7 +18,10 @@ enum JoyrideSteps {
 }
 
 const Joyride = () => {
-  const { value: joyrideState, setValue: setJoyrideState } = useLocalStorage('joyride', false);
+  const { value: joyrideState, setValue: setJoyrideState } = useLocalStorage(
+    LocalStorage.Joyride,
+    false
+  );
   const { T } = useT();
 
   const handleJoyride = ({ action, index }: CallBackProps) => {

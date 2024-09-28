@@ -1,7 +1,7 @@
 import { BugIcon, SettingsIcon } from '@icons';
 import { Events } from '@shared';
 import { emit } from '@tauri-apps/api/event';
-import { open } from '@tauri-apps/api/shell';
+import { open } from '@tauri-apps/plugin-shell';
 import { getSettings, toggleScroll } from '@utils';
 import { useState } from 'react';
 import { useT } from 'talkr';

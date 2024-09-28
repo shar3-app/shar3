@@ -43,7 +43,7 @@ struct SharedPayload {
 
 #[tauri::command]
 fn open(path: String, os_type: String) {
-    if os_type == "Windows_NT" {
+    if os_type == "windows" {
         Command::new("explorer")
             .args(["/select,", &path])
             .spawn()
@@ -133,6 +133,9 @@ fn main() {
         .expect("Failed to set global default subscriber");
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![log, stop, serve, open])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
