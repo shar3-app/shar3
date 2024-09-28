@@ -103,10 +103,15 @@ const Share = () => {
 
   const serve = (path: string | null) => {
     if (path) {
+      const settings = getSettings();
+      const hasAuth =
+        settings?.auth?.enabled && !!settings?.auth?.username && !!settings?.auth?.password;
       setLoading();
       invoke<SharePayload>('serve', {
         path,
-        isPublic: getSettings()?.publicShare
+        isPublic: settings?.publicShare,
+        username: hasAuth ? settings?.auth?.username : null,
+        password: hasAuth ? settings?.auth?.password : null
       })
         .then((payload) => {
           setIsSharing(true);

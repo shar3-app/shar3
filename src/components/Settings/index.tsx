@@ -2,7 +2,7 @@ import Button from '@components/Button';
 import { useLocalStorage, useTheme } from '@hooks';
 import { Events, Locale, LocalStorage, Settings } from '@shared';
 import { emit, listen } from '@tauri-apps/api/event';
-import { debounce, toggleScroll } from '@utils';
+import { toggleScroll } from '@utils';
 import { Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -15,7 +15,11 @@ const defaultSettings: Settings = {
   locale: 'en',
   publicShare: false,
   theme: 'dark',
-  auth: null,
+  auth: {
+    enabled: false,
+    username: 'username',
+    password: 'password'
+  },
   shortcuts: true
 };
 
@@ -111,6 +115,7 @@ const SettingsModal = () => {
 
         <SettingsSections title="settings.auth">
           <SettingsCheckbox
+            label={T('settings.auth_label')}
             isChecked={settings.auth?.enabled}
             onChange={(event) =>
               handleChange('auth', {
@@ -121,36 +126,33 @@ const SettingsModal = () => {
             }
           />
           {settings.auth?.enabled && (
+            // TODO on focus inputs show warning not updating in case is sharing
             <>
               <fieldset>
                 <TextInput
                   className="mb-2"
                   name="username"
                   placeholder={T('settings.auth_username')}
-                  value={settings.auth?.username ?? ''}
-                  onChange={debounce(
-                    (event: React.ChangeEvent<HTMLInputElement>) =>
-                      handleChange('auth', {
-                        enabled: settings.auth?.enabled,
-                        username: event.target.value || null,
-                        password: settings.auth?.password
-                      }),
-                    750
-                  )}
+                  value={settings.auth?.username}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('auth', {
+                      enabled: settings.auth?.enabled,
+                      username: event.target.value || null,
+                      password: settings.auth?.password
+                    })
+                  }
                 />
                 <TextInput
                   name="password"
                   placeholder={T('settings.auth_password')}
-                  value={settings.auth?.password ?? ''}
-                  onChange={debounce(
-                    (event: React.ChangeEvent<HTMLInputElement>) =>
-                      handleChange('auth', {
-                        enabled: settings.auth?.enabled,
-                        password: event.target.value || null,
-                        username: settings.auth?.username
-                      }),
-                    750
-                  )}
+                  value={settings.auth?.password}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('auth', {
+                      enabled: settings.auth?.enabled,
+                      password: event.target.value || null,
+                      username: settings.auth?.username
+                    })
+                  }
                 />
                 {((settings.auth?.username && !settings.auth?.password) ||
                   (settings.auth?.password && !settings.auth?.username)) && (

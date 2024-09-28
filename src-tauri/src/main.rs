@@ -74,7 +74,12 @@ async fn stop() -> Result<bool, bool> {
 }
 
 #[tauri::command]
-async fn serve(path: String, is_public: bool) -> Result<SharedPayload, ()> {
+async fn serve(
+    path: String,
+    is_public: bool,
+    username: Option<String>,
+    password: Option<String>,
+) -> Result<SharedPayload, ()> {
     let _ = stop().await;
 
     let path_str = path.clone();
@@ -88,7 +93,7 @@ async fn serve(path: String, is_public: bool) -> Result<SharedPayload, ()> {
         let success_clone = Arc::clone(&success);
 
         async move {
-            if let Err(e) = run_server(path_str, port).await {
+            if let Err(e) = run_server(path_str, port, username, password).await {
                 *success_clone.lock().await = false;
                 error!("Error running server: {:?}", e);
             }

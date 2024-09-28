@@ -10,7 +10,6 @@ export default (cb: () => void) => {
 
   useEffect(() => {
     const handler = (e: any) => {
-      e.preventDefault?.();
       const element: any = ref.current;
       if (element && !element.contains(e.target)) {
         refCb.current();
