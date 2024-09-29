@@ -4,6 +4,9 @@
 mod server;
 mod tunnel;
 
+use arboard::{Clipboard, ImageData};
+use base64::decode;
+use image::{load_from_memory_with_format, ImageFormat};
 use serde::Serialize;
 use std::net::{IpAddr, Ipv4Addr};
 use std::path::Path;
@@ -129,6 +132,39 @@ async fn serve(
     })
 }
 
+#[tauri::command]
+fn copy_image_to_clipboard(base64_string: String) -> Result<(), String> {
+    let base64_data = base64_string
+        .split(',')
+        .nth(1)
+        .ok_or("Invalid base64 string")?;
+    let image_data = decode(base64_data).map_err(|err| err.to_string())?;
+
+    // Decode the image using the `image` crate
+    let img = load_from_memory_with_format(&image_data, ImageFormat::Png)
+        .map_err(|err| err.to_string())?;
+
+    // Get the image dimensions and raw RGBA pixels
+    let rgba_image = img.to_rgba8();
+    let (width, height) = rgba_image.dimensions();
+    let raw_pixels = rgba_image.into_raw();
+
+    // Prepare the image for the clipboard in the expected format
+    let clipboard_image = ImageData {
+        width: width as usize,
+        height: height as usize,
+        bytes: std::borrow::Cow::Owned(raw_pixels),
+    };
+
+    // Create a clipboard instance and copy the image
+    let mut clipboard = Clipboard::new().map_err(|err| err.to_string())?;
+    clipboard
+        .set_image(clipboard_image)
+        .map_err(|err| err.to_string())?;
+
+    Ok(())
+}
+
 fn main() {
     let subscriber = FmtSubscriber::builder()
         .with_max_level(Level::DEBUG)
@@ -138,10 +174,17 @@ fn main() {
         .expect("Failed to set global default subscriber");
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![log, stop, serve, open])
+        .invoke_handler(tauri::generate_handler![
+            log,
+            stop,
+            serve,
+            open,
+            copy_image_to_clipboard
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

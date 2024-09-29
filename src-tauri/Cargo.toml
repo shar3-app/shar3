@@ -40,6 +40,9 @@ tokio-util = "0.7.12"
 tauri-plugin-shell = "2.0.0-rc"
 tauri-plugin-dialog = "2.0.0-rc"
 tauri-plugin-os = "2.0.0-rc"
+tauri-plugin-http = "2.0.0-rc"
+arboard = "3.4.1"
+image = "0.25.2"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
