@@ -63,6 +63,7 @@
   },
   "toasts": {
     "no_connection": "Not connected to a network, sharing is unavailable.",
+    "sharing_error": "An error ocurred, please try again or report the issue.",
     "delete_entry": "History entry '__filename__' deleted."
   },
   "settings": {

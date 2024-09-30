@@ -1,6 +1,7 @@
-import { ThemeMode } from '@shared';
+import { ErrorEvent, ThemeMode } from '@shared';
 import { invoke } from '@tauri-apps/api/core';
 import { svgString2Image } from './base64';
+import { trackError } from './trackError';
 
 export const copyQrToClipboard = (id: string, theme: () => ThemeMode): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -16,16 +17,18 @@ export const copyQrToClipboard = (id: string, theme: () => ThemeMode): Promise<s
               await invoke('copy_image_to_clipboard', { base64String });
               resolve('generic.qr_copied.success');
             } catch (error) {
-              console.error(error); // TODO log
+              trackError(ErrorEvent.CopyQR, error);
               reject('generic.qr_copied.error');
             }
           },
           theme() === 'dark' ? '#000' : '#fff'
         );
-      } catch (err) {
+      } catch (error) {
+        trackError(ErrorEvent.CopyQR, error);
         reject('generic.qr_copied.error'); // log event
       }
     } else {
+      trackError(ErrorEvent.CopyQR, svg);
       reject('generic.qr_copied.error'); // log event
     }
   });

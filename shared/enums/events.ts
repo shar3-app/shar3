@@ -7,3 +7,17 @@ export enum Events {
   SetHistory = 'set-history',
   ShowSettings = 'show-settings'
 }
+
+export enum TrackEvent {
+  Error = 'ERROR'
+}
+
+export enum ErrorEvent {
+  Serve = 'SERVE',
+  UpdateUrl = 'UPDATE-URL',
+  StopServe = 'STOP-SERVE',
+  LocalStorage = 'LOCALSTORAGE',
+  CopyQR = 'COPY-QR',
+  CopyUrl = 'COPY-URL',
+  GetSettings = 'GET-SETTINGS'
+}

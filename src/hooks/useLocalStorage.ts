@@ -1,4 +1,5 @@
-import { LocalStorage } from '@shared';
+import { ErrorEvent, LocalStorage } from '@shared';
+import { trackError } from '@utils';
 import { useEffect, useState } from 'react';
 
 export default <T = any>(key: LocalStorage, defaultValue: T) => {
@@ -9,7 +10,8 @@ export default <T = any>(key: LocalStorage, defaultValue: T) => {
         return JSON.parse(saved);
       }
       return defaultValue;
-    } catch {
+    } catch (error) {
+      trackError(ErrorEvent.LocalStorage, error);
       return defaultValue;
     }
   };

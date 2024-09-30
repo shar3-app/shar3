@@ -1,12 +1,14 @@
+import { trackEvent } from '@aptabase/tauri';
 import { useConnection, useLocalStorage } from '@hooks';
-import { Events, LoaderState, LocalStorage, SharePayload } from '@shared';
+import { ErrorEvent, Events, LoaderState, LocalStorage, SharePayload } from '@shared';
 import { invoke } from '@tauri-apps/api/core';
 import { emit, listen, TauriEvent } from '@tauri-apps/api/event';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { open } from '@tauri-apps/plugin-dialog';
-import { getSettings, noConnectionError } from '@utils';
+import { getSettings, noConnectionError, trackError } from '@utils';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useT } from 'talkr';
 import Dropzone from './Dropzone';
 import Shared from './Shared';
@@ -67,7 +69,8 @@ const Share = () => {
         }
       ]);
     } else {
-      // TODO error control
+      toast.error(T('toasts.sharing_error'));
+      trackError(ErrorEvent.Serve, { path, url, success, isDirectory });
     }
   };
 
@@ -79,13 +82,13 @@ const Share = () => {
           setIsSharing(false);
           setShared(null);
         } else {
-          // TODO error
-          alert('error');
+          toast.error(T('toasts.sharing_error'));
+          trackError(ErrorEvent.StopServe, false);
         }
       })
-      .catch(() => {
-        alert('error');
-        // TODO catch and stop loader
+      .catch((error) => {
+        toast.error(T('toasts.sharing_error'));
+        trackError(ErrorEvent.StopServe, error);
       })
       .finally(() => setLoading(false));
   };
@@ -114,24 +117,21 @@ const Share = () => {
         password: hasAuth ? settings?.auth?.password : null
       })
         .then((payload) => {
+          trackEvent('share', {
+            path
+          });
           setIsSharing(true);
           updateSharedUrl(payload);
         })
-        // TODO add catch
+        .catch((error) => {
+          toast.error(T('toasts.sharing_error'));
+          trackError(ErrorEvent.Serve, error);
+        })
         .finally(() => setLoading(false));
     } else {
-      // TODOerror
+      toast.error(T('toasts.sharing_error'));
     }
   };
-
-  /* TODO check old usage
-
-  const onShare = (_, path: any) => {
-    if (!path.canceled && path.filePaths?.length && checkConnection()) {
-      setLoading(true);
-      onUpload(path.filePaths[0]);
-    }
-    };*/
 
   const setLoading = (state = true): void => {
     emit(state ? LoaderState.Loading : LoaderState.StopLoading);

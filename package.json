@@ -17,6 +17,7 @@
     "prettify": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
+    "@aptabase/tauri": "github:aptabase/tauri-plugin-aptabase#v2",
     "@tauri-apps/api": "2.0.0-rc.6",
     "@tauri-apps/plugin-dialog": "~2.0.0-rc",
     "@tauri-apps/plugin-http": "~2.0.0-rc",

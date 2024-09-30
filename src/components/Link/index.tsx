@@ -1,7 +1,8 @@
 import { open } from '@tauri-apps/plugin-shell';
+import { ComponentProps } from 'react';
 
-const Link = ({ children, href, className, ...props }: any) => {
-  const onHref = () => open(href);
+const Link = ({ children, href, className, ...props }: ComponentProps<'a'>) => {
+  const onHref = () => open(href ?? '#');
 
   return (
     <a

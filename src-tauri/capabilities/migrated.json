@@ -21,6 +21,7 @@
     "shell:default",
     "dialog:default",
     "os:default",
-    "http:default"
+    "http:default",
+    "aptabase:allow-track-event"
   ]
 }

@@ -1,4 +1,5 @@
-import { Settings } from '@shared';
+import { ErrorEvent, Settings } from '@shared';
+import { trackError } from './trackError';
 
 export const getSettings = (): Settings | null => {
   try {
@@ -7,7 +8,8 @@ export const getSettings = (): Settings | null => {
       return JSON.parse(saved);
     }
     return null;
-  } catch {
+  } catch (error) {
+    trackError(ErrorEvent.GetSettings, error);
     return null;
   }
 };

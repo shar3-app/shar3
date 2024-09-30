@@ -1,9 +1,4 @@
-import {
-  emitCustomEvent,
-  useClickAway,
-  useCustomEventListener,
-  useDisableContextMenu
-} from '@hooks';
+import { emitCustomEvent, useClickAway, useCustomEventListener } from '@hooks';
 import { ContextMenuCoords, ContextMenuItems } from '@shared';
 import { toggleScroll } from '@utils';
 import { useEffect, useState } from 'react';
@@ -20,7 +15,7 @@ export const openContextMenu = (coords: ContextMenuCoords, menu: ContextMenuItem
 };
 
 const ContextMenu = () => {
-  useDisableContextMenu();
+  //useDisableContextMenu();
   const [open, setOpen] = useState(false);
   const [menus, setMenus] = useState<ContextMenuItems>([]);
   const [position, setPosition] = useState<ContextMenuCoords>({ x: 0, y: 0 });

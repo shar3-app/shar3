@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@aptabase/tauri':
+        specifier: github:aptabase/tauri-plugin-aptabase#v2
+        version: https://codeload.github.com/aptabase/tauri-plugin-aptabase/tar.gz/4e2422a6ad3f73d0ba7b9696b9f3f64beb13295b
       '@tauri-apps/api':
         specifier: 2.0.0-rc.6
         version: 2.0.0-rc.6
@@ -94,6 +97,10 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@aptabase/tauri@https://codeload.github.com/aptabase/tauri-plugin-aptabase/tar.gz/4e2422a6ad3f73d0ba7b9696b9f3f64beb13295b':
+    resolution: {tarball: https://codeload.github.com/aptabase/tauri-plugin-aptabase/tar.gz/4e2422a6ad3f73d0ba7b9696b9f3f64beb13295b}
+    version: 0.4.2
 
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -1330,6 +1337,9 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
+  tslib@2.7.0:
+    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
+
   type-fest@4.26.1:
     resolution: {integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==}
     engines: {node: '>=16'}
@@ -1412,6 +1422,11 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@aptabase/tauri@https://codeload.github.com/aptabase/tauri-plugin-aptabase/tar.gz/4e2422a6ad3f73d0ba7b9696b9f3f64beb13295b':
+    dependencies:
+      '@tauri-apps/api': 2.0.0-rc.6
+      tslib: 2.7.0
 
   '@babel/code-frame@7.24.7':
     dependencies:
@@ -2582,6 +2597,8 @@ snapshots:
       is-lite: 0.8.2
 
   ts-interface-checker@0.1.13: {}
+
+  tslib@2.7.0: {}
 
   type-fest@4.26.1: {}
 
