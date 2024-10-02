@@ -50,11 +50,10 @@ async fn serve_pdf(file_path: &str) -> Result<Response<Body>, warp::Rejection> {
 }
 
 async fn serve_listing(path: &Path) -> Result<Response<Body>, warp::Rejection> {
-    let html;
-    match directory_html(path) {
-        Ok(listing) => html = listing,
-        Err(_) => html = String::from("An error ocurred"),
-    }
+    let html = match directory_html(path) {
+        Ok(listing) => listing,
+        Err(_) => String::from("An error ocurred"),
+    };
 
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
@@ -63,11 +62,10 @@ async fn serve_listing(path: &Path) -> Result<Response<Body>, warp::Rejection> {
 }
 
 async fn serve_image(path: &str, ext: &str) -> Result<Response<Body>, warp::Rejection> {
-    let html;
-    match image_html(path, ext) {
-        Ok(image_html) => html = image_html,
-        Err(_) => html = String::from("An error ocurred"),
-    }
+    let html = match image_html(path, ext) {
+        Ok(image_html) => image_html,
+        Err(_) => String::from("An error ocurred"),
+    };
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
         .body(Body::from(html))
@@ -75,11 +73,10 @@ async fn serve_image(path: &str, ext: &str) -> Result<Response<Body>, warp::Reje
 }
 
 async fn serve_svg(path: &str) -> Result<Response<Body>, warp::Rejection> {
-    let html;
-    match svg_html(path) {
-        Ok(svg_html) => html = svg_html,
-        Err(_) => html = String::from("An error ocurred"),
-    }
+    let html = match svg_html(path) {
+        Ok(svg_html) => svg_html,
+        Err(_) => String::from("An error ocurred"),
+    };
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
         .body(Body::from(html))
@@ -87,11 +84,10 @@ async fn serve_svg(path: &str) -> Result<Response<Body>, warp::Rejection> {
 }
 
 async fn serve_file(path: &str) -> Result<Response<Body>, warp::Rejection> {
-    let html;
-    match file_html(path) {
-        Ok(file_html) => html = file_html,
-        Err(_) => html = String::from("An error ocurred"),
-    }
+    let html = match file_html(path) {
+        Ok(file_html) => file_html,
+        Err(_) => String::from("An error ocurred"),
+    };
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
         .body(Body::from(html))

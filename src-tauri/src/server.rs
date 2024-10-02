@@ -49,8 +49,8 @@ fn with_auth(
     password: Option<String>,
 ) -> impl Filter<Extract = (), Error = Rejection> + Clone {
     // Create default values for username and password
-    let user = username.unwrap_or_else(|| "".to_string());
-    let pwd = password.unwrap_or_else(|| "".to_string());
+    let user = username.unwrap_or_default();
+    let pwd = password.unwrap_or_default();
     let has_auth = !user.is_empty() && !pwd.is_empty(); // Determine if authentication is needed
 
     warp::header::optional::<HeaderValue>("authorization")

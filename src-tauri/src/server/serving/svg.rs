@@ -6,18 +6,16 @@ use crate::server::utils::{file_to_base64, get_filename, read_file_content};
 pub fn svg_html(path_str: &str) -> Result<String, Error> {
     let path = Path::new(path_str);
     let name = get_filename(path);
-    let svg;
-    let base64;
 
-    match file_to_base64(path_str) {
-        Ok(base64_string) => base64 = base64_string,
-        Err(_) => base64 = String::from(path_str),
-    }
+    let base64 = match file_to_base64(path_str) {
+        Ok(base64_string) => base64_string,
+        Err(_) => String::from(path_str),
+    };
 
-    match read_file_content(path_str) {
-        Ok(content) => svg = content,
-        Err(_) => svg = String::from("<p>Error rendering svg file</p>"),
-    }
+    let svg = match read_file_content(path_str) {
+        Ok(content) => content,
+        Err(_) => String::from("<p>Error rendering svg file</p>"),
+    };
 
     let image_src = &format!("data:image/svg;base64,{}", base64.as_str());
 

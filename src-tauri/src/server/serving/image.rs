@@ -6,12 +6,10 @@ use crate::server::utils::{file_to_base64, get_filename};
 pub fn image_html(path_str: &str, ext: &str) -> Result<String, Error> {
     let path = Path::new(path_str);
     let name = get_filename(path);
-    let base64;
-
-    match file_to_base64(path_str) {
-        Ok(base64_string) => base64 = base64_string,
-        Err(_) => base64 = String::from(path_str),
-    }
+    let base64 = match file_to_base64(path_str) {
+        Ok(base64_string) => base64_string,
+        Err(_) => String::from(path_str),
+    };
 
     let image_src = &format!("data:image/{};base64,{}", ext, base64.as_str());
 
