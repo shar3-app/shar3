@@ -1,6 +1,8 @@
 mod serving;
 mod utils;
 
+use base64::engine::general_purpose::STANDARD;
+use base64::Engine;
 use get_if_addrs::get_if_addrs;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
@@ -63,7 +65,7 @@ fn with_auth(
                 if let Some(header_value) = auth_header {
                     if let Ok(auth_str) = header_value.to_str() {
                         let base64_encoded = auth_str.trim_start_matches("Basic ");
-                        if let Ok(decoded) = base64::decode(base64_encoded) {
+                        if let Ok(decoded) = STANDARD.decode(base64_encoded) {
                             let decoded_str = String::from_utf8(decoded).unwrap_or_default();
                             let credentials = decoded_str.splitn(2, ':').collect::<Vec<&str>>();
                             if credentials.len() == 2

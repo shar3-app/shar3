@@ -70,7 +70,7 @@ const Share = () => {
       ]);
     } else {
       toast.error(T('toasts.sharing_error'));
-      trackError(ErrorEvent.Serve, { path, url, success, isDirectory });
+      trackError(ErrorEvent.UpdateUrl, { path, url, success, isDirectory });
     }
   };
 

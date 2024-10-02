@@ -5,7 +5,8 @@ mod server;
 mod tunnel;
 
 use arboard::{Clipboard, ImageData};
-use base64::decode;
+use base64::engine::general_purpose::STANDARD;
+use base64::Engine;
 use image::{load_from_memory_with_format, ImageFormat};
 use serde::Serialize;
 use std::net::{IpAddr, Ipv4Addr};
@@ -83,6 +84,7 @@ async fn serve(
     username: Option<String>,
     password: Option<String>,
 ) -> Result<SharedPayload, ()> {
+    // Stop any running server first
     let _ = stop().await;
 
     let path_str = path.clone();
@@ -90,7 +92,10 @@ async fn serve(
     let localhost = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
     let local_ip = get_local_ip().unwrap_or(localhost);
 
+    // Variable to track server success
     let success = Arc::new(Mutex::new(true));
+
+    // Spawn the server task
     let server_task = tokio::spawn({
         let path_str = path_str.clone();
         let success_clone = Arc::clone(&success);
@@ -103,20 +108,22 @@ async fn serve(
         }
     });
 
+    // Store the server task in a global variable
     *SERVER_TASK.lock().await = Some(server_task);
 
     let is_directory = Path::new(&path_str).is_dir();
     let mut final_url = format!("http://{}:{}", local_ip, port);
 
+    // Attempt to start public tunnel if needed
     let final_success = if *success.lock().await && is_public {
         match start_tunnel(port) {
             Ok(tunnel_url) => {
-                info!("Started tunnel correctly");
+                info!("Started Bore tunnel correctly");
                 final_url = tunnel_url;
                 true
             }
             Err(error) => {
-                error!("Error starting tunnel: {}", error);
+                error!("Error starting Bore tunnel: {}", error);
                 false
             }
         }
@@ -138,7 +145,9 @@ fn copy_image_to_clipboard(base64_string: String) -> Result<(), String> {
         .split(',')
         .nth(1)
         .ok_or("Invalid base64 string")?;
-    let image_data = decode(base64_data).map_err(|err| err.to_string())?;
+    let image_data = STANDARD
+        .decode(base64_data)
+        .map_err(|err| err.to_string())?;
 
     // Decode the image using the `image` crate
     let img = load_from_memory_with_format(&image_data, ImageFormat::Png)

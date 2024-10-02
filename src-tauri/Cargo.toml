@@ -44,6 +44,8 @@ tauri-plugin-http = "2.0.0-rc"
 arboard = "3.4.1"
 image = "0.25.2"
 tauri-plugin-aptabase = { git = "https://github.com/aptabase/tauri-plugin-aptabase", branch = "v2" }
+bore-cli = "0.5.1"
+anyhow = "1.0.89"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

@@ -44,7 +44,7 @@ pub fn file_html(path_str: &str) -> Result<String, Error> {
         ";';  // Example path
 
 	                // Create the download URL for your endpoint
-	                const downloadUrl = `http://${location.host}",
+	                const downloadUrl = `${location.origin}",
     );
     html.push_str("/d0wnl04d_f1l3?file_path=${encodeURIComponent('");
     html.push_str(path_str);
