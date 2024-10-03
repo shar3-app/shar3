@@ -36,13 +36,11 @@ pub async fn render_content(selected_path: &str) -> Result<Response<Body>, warp:
 }
 
 async fn serve_pdf(file_path: &str) -> Result<Response<Body>, warp::Rejection> {
-    // Read the file
     let mut file = File::open(file_path).map_err(|_| warp::reject::not_found())?;
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
         .map_err(|_| warp::reject::not_found())?;
 
-    // Create a response with the appropriate content type for PDF
     Ok(Response::builder()
         .header(CONTENT_TYPE, "application/pdf")
         .body(Body::from(buffer))
@@ -50,10 +48,7 @@ async fn serve_pdf(file_path: &str) -> Result<Response<Body>, warp::Rejection> {
 }
 
 async fn serve_listing(path: &Path) -> Result<Response<Body>, warp::Rejection> {
-    let html = match directory_html(path) {
-        Ok(listing) => listing,
-        Err(_) => String::from("An error ocurred"),
-    };
+    let html = directory_html(path).unwrap_or_else(|_| String::from("An error occurred"));
 
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
@@ -62,10 +57,7 @@ async fn serve_listing(path: &Path) -> Result<Response<Body>, warp::Rejection> {
 }
 
 async fn serve_image(path: &str, ext: &str) -> Result<Response<Body>, warp::Rejection> {
-    let html = match image_html(path, ext) {
-        Ok(image_html) => image_html,
-        Err(_) => String::from("An error ocurred"),
-    };
+    let html = image_html(path, ext).unwrap_or_else(|_| String::from("An error occurred"));
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
         .body(Body::from(html))
@@ -73,10 +65,7 @@ async fn serve_image(path: &str, ext: &str) -> Result<Response<Body>, warp::Reje
 }
 
 async fn serve_svg(path: &str) -> Result<Response<Body>, warp::Rejection> {
-    let html = match svg_html(path) {
-        Ok(svg_html) => svg_html,
-        Err(_) => String::from("An error ocurred"),
-    };
+    let html = svg_html(path).unwrap_or_else(|_| String::from("An error occurred"));
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
         .body(Body::from(html))
@@ -84,10 +73,7 @@ async fn serve_svg(path: &str) -> Result<Response<Body>, warp::Rejection> {
 }
 
 async fn serve_file(path: &str) -> Result<Response<Body>, warp::Rejection> {
-    let html = match file_html(path) {
-        Ok(file_html) => file_html,
-        Err(_) => String::from("An error ocurred"),
-    };
+    let html = file_html(path).unwrap_or_else(|_| String::from("An error occurred"));
     Ok(Response::builder()
         .header(CONTENT_TYPE, "text/html")
         .body(Body::from(html))

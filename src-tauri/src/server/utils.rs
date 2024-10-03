@@ -5,43 +5,33 @@ use percent_encoding::percent_decode_str;
 use std::fs::{read_to_string, File};
 use std::io::{self, Error, Read};
 use std::path::{Path, PathBuf};
-use std::result::Result;
 use std::time::SystemTime;
 use tokio_util::io::ReaderStream;
-use warp::hyper::header::{HeaderValue, CONTENT_DISPOSITION};
+use warp::hyper::header::{HeaderValue, CONTENT_DISPOSITION, CONTENT_LENGTH};
 use warp::hyper::Body;
-use warp::reply::Reply;
+use warp::reply::Response;
 
 pub fn remove_last_char(s: &str) -> String {
-    if s.is_empty() || !s.ends_with("/") {
-        s.to_string()
-    } else {
+    if s.ends_with('/') {
         s[..s.len() - 1].to_string()
+    } else {
+        s.to_string()
     }
 }
 
 pub fn format_time(result: Result<SystemTime, Error>) -> String {
-    match result {
-        Ok(system_time) => {
-            // Convert SystemTime to DateTime<Utc>
+    result
+        .ok()
+        .map(|system_time| {
             let datetime: DateTime<Utc> = system_time.into();
-
-            // Convert to local time
             let local_datetime: DateTime<Local> = datetime.with_timezone(&Local);
-
-            // Format the date as "Sep 24 at 16:45"
             local_datetime.format("%b %d at %H:%M").to_string()
-        }
-        Err(_) => String::new(),
-    }
+        })
+        .unwrap_or_else(String::new)
 }
 
 pub fn read_file_content(file_path: &str) -> io::Result<String> {
-    let path = Path::new(file_path);
-
-    // Read the SVG file content as a string
-    let svg_content = read_to_string(path)?;
-    Ok(svg_content)
+    read_to_string(Path::new(file_path))
 }
 
 pub fn decode_percent_encoded_path(encoded: &str) -> String {
@@ -49,28 +39,18 @@ pub fn decode_percent_encoded_path(encoded: &str) -> String {
 }
 
 pub fn get_filename(path: &Path) -> String {
-    if let Some(filename) = path.file_name().and_then(|os_str| os_str.to_str()) {
-        decode_percent_encoded_path(filename)
-    } else {
-        String::from("filename")
-    }
+    path.file_name()
+        .and_then(|os_str| os_str.to_str())
+        .map(decode_percent_encoded_path)
+        .unwrap_or_else(|| String::from("filename"))
 }
 
-// Function to read a file and return its Base64 representation
 pub fn file_to_base64(file_path: &str) -> io::Result<String> {
     let decoded_path = decode_percent_encoded_path(file_path);
-
-    // Open the file
-    let mut file = File::open(&decoded_path)?;
-
-    // Read the file contents into a vector of bytes
+    let mut file = File::open(decoded_path)?;
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)?;
-
-    // Encode the file contents to base64 using STANDARD engine
-    let base64_string = STANDARD.encode(&buffer);
-
-    Ok(base64_string)
+    Ok(STANDARD.encode(&buffer))
 }
 
 pub fn format_bytes(bytes: u64) -> String {
@@ -80,53 +60,49 @@ pub fn format_bytes(bytes: u64) -> String {
     const TB: u64 = GB * 1024;
     const PB: u64 = TB * 1024;
 
-    if bytes >= PB {
-        format!("{:.2} PB", bytes as f64 / PB as f64)
-    } else if bytes >= TB {
-        format!("{:.2} TB", bytes as f64 / TB as f64)
-    } else if bytes >= GB {
-        format!("{:.2} GB", bytes as f64 / GB as f64)
-    } else if bytes >= MB {
-        format!("{:.2} MB", bytes as f64 / MB as f64)
-    } else if bytes >= KB {
-        format!("{:.2} KB", bytes as f64 / KB as f64)
-    } else {
-        format!("{} B", bytes)
+    match bytes {
+        b if b >= PB => format!("{:.2} PB", b as f64 / PB as f64),
+        b if b >= TB => format!("{:.2} TB", b as f64 / TB as f64),
+        b if b >= GB => format!("{:.2} GB", b as f64 / GB as f64),
+        b if b >= MB => format!("{:.2} MB", b as f64 / MB as f64),
+        b if b >= KB => format!("{:.2} KB", b as f64 / KB as f64),
+        _ => format!("{} B", bytes),
     }
 }
 
-// Stream the file to the client
 pub async fn stream_file(file_path: String) -> Result<impl warp::Reply, warp::Rejection> {
-    let path = PathBuf::from(file_path);
+    let path = PathBuf::from(&file_path);
 
-    // Try to open the file
-    let file = match tokio::fs::File::open(path.clone()).await {
-        Ok(file) => file,
-        Err(_) => return Err(warp::reject::not_found()),
-    };
+    // Get file metadata to obtain the file size
+    let metadata = tokio::fs::metadata(&path)
+        .await
+        .map_err(|_| warp::reject::not_found())?;
+    let file_size = metadata.len(); // File size in bytes
 
-    // Create a stream from the file
+    let file = tokio::fs::File::open(path.clone())
+        .await
+        .map_err(|_| warp::reject::not_found())?;
     let stream = ReaderStream::new(file);
 
-    // Get the file name
     let file_name = path
         .file_name()
         .and_then(|name| name.to_str())
         .unwrap_or("file");
 
-    // Set the content-disposition header for download
+    // Set Content-Disposition header for downloading the file
     let content_disposition =
         HeaderValue::from_str(&format!("attachment; filename=\"{}\"", file_name))
             .unwrap_or_else(|_| HeaderValue::from_static("attachment"));
 
-    // Create a warp reply with a stream body and the necessary headers
-    let response = warp::reply::Response::new(Body::wrap_stream(stream));
-    let mut response = response.into_response();
+    // Set Content-Length header to the size of the file
+    let content_length = HeaderValue::from_str(&file_size.to_string())
+        .unwrap_or_else(|_| HeaderValue::from_static("0"));
 
-    // Add the Content-Disposition header to trigger download
-    response
-        .headers_mut()
-        .insert(CONTENT_DISPOSITION, content_disposition);
+    // Create the response and add headers
+    let mut response = Response::new(Body::wrap_stream(stream));
+    let headers = response.headers_mut();
+    headers.insert(CONTENT_DISPOSITION, content_disposition);
+    headers.insert(CONTENT_LENGTH, content_length); // Adding the Content-Length header
 
     Ok(response)
 }

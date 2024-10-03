@@ -5,9 +5,9 @@ mod server;
 mod tunnel;
 
 use arboard::{Clipboard, ImageData};
-use base64::engine::general_purpose::STANDARD;
-use base64::Engine;
+use base64::{engine::general_purpose::STANDARD, Engine};
 use image::{load_from_memory_with_format, ImageFormat};
+use once_cell::sync::Lazy;
 use serde::Serialize;
 use std::net::{IpAddr, Ipv4Addr};
 use std::path::Path;
@@ -21,10 +21,9 @@ use tracing_subscriber::FmtSubscriber;
 use server::{get_available_port, get_local_ip, run_server};
 use tunnel::{kill_tunnel, start_tunnel};
 
-// Define global task storage
-lazy_static::lazy_static! {
-    static ref SERVER_TASK: Arc<Mutex<Option<JoinHandle<()>>>> = Arc::new(Mutex::new(None));
-}
+// Global task storage using Lazy and Mutex
+static SERVER_TASK: Lazy<Arc<Mutex<Option<JoinHandle<()>>>>> =
+    Lazy::new(|| Arc::new(Mutex::new(None)));
 
 async fn stop_server() -> Result<(), String> {
     let mut server_task_lock = SERVER_TASK.lock().await;
@@ -64,16 +63,13 @@ fn log(text: String) {
 
 #[tauri::command]
 async fn stop() -> Result<bool, bool> {
-    let success = if kill_tunnel().is_err() {
-        error!("Error killing tunnel.");
-        false
-    } else {
-        true
-    };
+    let tunnel_result = kill_tunnel().map_err(|_| error!("Error killing tunnel."));
+    let server_result = stop_server().await;
 
-    match stop_server().await {
-        Ok(_) => Ok(success),
-        Err(_) => Ok(false),
+    if tunnel_result.is_err() || server_result.is_err() {
+        Ok(false)
+    } else {
+        Ok(true)
     }
 }
 
@@ -84,41 +80,32 @@ async fn serve(
     username: Option<String>,
     password: Option<String>,
 ) -> Result<SharedPayload, ()> {
-    // Stop any running server first
     let _ = stop().await;
 
-    let path_str = path.clone();
     let port = get_available_port().unwrap_or(8765);
-    let localhost = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
-    let local_ip = get_local_ip().unwrap_or(localhost);
-
-    // Variable to track server success
+    let local_ip = get_local_ip().unwrap_or(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
     let success = Arc::new(Mutex::new(true));
+    let path_clone = path.clone();
 
-    // Spawn the server task
     let server_task = tokio::spawn({
-        let path_str = path_str.clone();
         let success_clone = Arc::clone(&success);
-
         async move {
-            if let Err(e) = run_server(path_str, port, username, password).await {
+            if let Err(e) = run_server(path_clone, port, username, password).await {
                 *success_clone.lock().await = false;
                 error!("Error running server: {:?}", e);
             }
         }
     });
 
-    // Store the server task in a global variable
     *SERVER_TASK.lock().await = Some(server_task);
 
-    let is_directory = Path::new(&path_str).is_dir();
+    let is_directory = Path::new(&path).is_dir();
     let mut final_url = format!("http://{}:{}", local_ip, port);
 
-    // Attempt to start public tunnel if needed
     let final_success = if *success.lock().await && is_public {
         match start_tunnel(port) {
             Ok(tunnel_url) => {
-                info!("Started Bore tunnel correctly");
+                info!("Started Bore tunnel successfully");
                 final_url = tunnel_url;
                 true
             }
@@ -132,7 +119,7 @@ async fn serve(
     };
 
     Ok(SharedPayload {
-        path: path_str,
+        path,
         url: final_url,
         success: final_success,
         is_directory,
@@ -149,23 +136,19 @@ fn copy_image_to_clipboard(base64_string: String) -> Result<(), String> {
         .decode(base64_data)
         .map_err(|err| err.to_string())?;
 
-    // Decode the image using the `image` crate
     let img = load_from_memory_with_format(&image_data, ImageFormat::Png)
         .map_err(|err| err.to_string())?;
 
-    // Get the image dimensions and raw RGBA pixels
     let rgba_image = img.to_rgba8();
     let (width, height) = rgba_image.dimensions();
     let raw_pixels = rgba_image.into_raw();
 
-    // Prepare the image for the clipboard in the expected format
     let clipboard_image = ImageData {
         width: width as usize,
         height: height as usize,
         bytes: std::borrow::Cow::Owned(raw_pixels),
     };
 
-    // Create a clipboard instance and copy the image
     let mut clipboard = Clipboard::new().map_err(|err| err.to_string())?;
     clipboard
         .set_image(clipboard_image)
