@@ -31,27 +31,24 @@ pub fn file_html(path_str: &str) -> Result<String, Error> {
                 </svg>
                 <h1 style=\"color: rgb(156 163 175); font-size: 1.5rem; margin: .5rem; \">");
     html.push_str(&name);
-    html.push_str("</h1>
+    html.push_str(
+        "</h1>
         		<button id=\"download\">Download file</button>
          	</div>
 
-            <script>
-	            async function download() {
-	                // Define the file path (this should be dynamic based on the file you want to download)
-	                const filePath = '");
-    html.push_str(path_str);
-    html.push_str(
-        ";';  // Example path
+          	<div id=\"download-progress\" style=\"position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.75); display: flex;flex-direction: column; gap: 1.5rem; justify-content: center; align-items: center; display: none; color: white;\">
+	          	<div>Downloading...</div>
+				<div id=\"download-percentage\" style=\"background: #7f5af0; height: 5rem; font-weight: bold; width: 5rem; display: flex; justify-content: center; align-items: center; font-size: 1.25rem; border-radius: 50%; font-size: 1.25rem;\"></div>
+            </div>
 
-	                // Create the download URL for your endpoint
-	                const downloadUrl = `${location.origin}",
+            <script>
+	           	async function download() {
+		            const downloadUrl = `${location.origin}",
     );
     html.push_str("/d0wnl04d_f1l3?file_path=${encodeURIComponent('");
     html.push_str(path_str);
-    html.push_str(
-    				"')}`;
+    html.push_str("')}`;
 
-	                // Make the request to the download endpoint
 	                try {
 	                    const response = await fetch(downloadUrl);
 
@@ -59,27 +56,73 @@ pub fn file_html(path_str: &str) -> Result<String, Error> {
 	                        throw new Error('Failed to download the file');
 	                    }
 
-	                    // Extract the filename from the Content-Disposition header
+	                    // Extract filename from Content-Disposition header or use a default
 	                    const contentDisposition = response.headers.get('Content-Disposition');
 	                    const filename = contentDisposition
 	                        ? contentDisposition.match(/filename=\"(.+)\"/)[1]
-	                        : 'downloaded_file.txt';
+	                        : 'downloaded_file.mp4';
 
-	                    // Convert the response to a Blob
-	                    const blob = await response.blob();
+	                    // Get the total file size from Content-Length header (if available)
+	                    const contentLength = response.headers.get('Content-Length');
+	                    const totalBytes = contentLength ? parseInt(contentLength, 10) : 0;
 
-	                    // Create a hidden anchor element and trigger a download
+	                    // Create a progress bar if you want to display progress (optional)
+	                    const progressElement = document.getElementById('download-progress');
+	                    const percentageElement = document.getElementById('download-percentage');
+						progressElement.style.display = 'flex';
+
+	                    // Create a stream reader
+	                    const reader = response.body.getReader();
+	                    let receivedBytes = 0;
+
+	                    // Use Uint8Array to store the incoming bytes
+	                    const chunks = [];
+
+	                    // Read the stream chunk by chunk
+	                    while (true) {
+	                        const { done, value } = await reader.read();
+
+	                        if (done) {
+	                            break; // Stream has finished
+	                        }
+
+	                        // Add the chunk to the array of chunks
+	                        chunks.push(value);
+	                        receivedBytes += value.length;
+
+	                        // Calculate the download progress
+	                        if (totalBytes) {
+	                            const percentage = Math.floor((receivedBytes / totalBytes) * 100);
+	                            percentageElement.textContent = `${percentage}%`;
+	                        } else {
+	                            percentageElement.textContent = `Downloading...`;
+	                        }
+	                    }
+
+	                    // Combine all the chunks into a single Uint8Array
+	                    const blobData = new Uint8Array(receivedBytes);
+	                    let position = 0;
+	                    for (const chunk of chunks) {
+	                        blobData.set(chunk, position);
+	                        position += chunk.length;
+	                    }
+
+	                    // Create a Blob from the combined data
+	                    const blob = new Blob([blobData]);
+
+	                    // Trigger a download in the browser
 	                    const link = document.createElement('a');
-	                    link.style.display = 'none';
-	                    link.href = window.URL.createObjectURL(blob);
+	                    link.href = URL.createObjectURL(blob);
 	                    link.download = filename;
-
-	                    // Append to the body, trigger the click, and remove the element
 	                    document.body.appendChild(link);
 	                    link.click();
 	                    document.body.removeChild(link);
+
+						// Reset elements
+						percentageElement.textContent = '';
+						progressElement.style.display = 'none';
 	                } catch (error) {
-	                    alert('Error downloading file: ', error);
+	                    alert('Error downloading file: ' + error.message);
 	                }
 	            }
 
