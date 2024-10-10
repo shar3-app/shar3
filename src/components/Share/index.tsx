@@ -6,10 +6,11 @@ import { emit, listen, TauriEvent } from '@tauri-apps/api/event';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { open } from '@tauri-apps/plugin-dialog';
-import { getSettings, noConnectionError, trackError } from '@utils';
+import { noConnectionError, trackError } from '@utils';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useT } from 'talkr';
+import { getSettings } from '../../stores/settings';
 import Dropzone from './Dropzone';
 import Shared from './Shared';
 const appWindow = getCurrentWebviewWindow();
@@ -104,15 +105,14 @@ const Share = () => {
     }
   };
 
-  const serve = (path: string | null) => {
+  const serve = async (path: string | null) => {
     if (path) {
-      const settings = getSettings();
+      const settings = await getSettings();
       const hasAuth =
         settings?.auth?.enabled && !!settings?.auth?.username && !!settings?.auth?.password;
       setLoading();
       invoke<SharePayload>('serve', {
         path,
-        isPublic: settings?.publicShare,
         username: hasAuth ? settings?.auth?.username : null,
         password: hasAuth ? settings?.auth?.password : null
       })

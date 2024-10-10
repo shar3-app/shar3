@@ -41,7 +41,7 @@ pub fn file_html(path_str: &str) -> Result<String, Error> {
 				<div id=\"download-percentage\" style=\"background: #7f5af0; height: 5rem; font-weight: bold; width: 5rem; display: flex; justify-content: center; align-items: center; font-size: 1.25rem; border-radius: 50%; font-size: 1.25rem;\"></div>
             </div>
 
-            <script>
+            <script type=\"module\">
 	           	async function download() {
 		            const downloadUrl = `${location.origin}",
     );

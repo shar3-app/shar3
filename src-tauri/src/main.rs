@@ -76,10 +76,10 @@ async fn stop() -> Result<bool, bool> {
 #[tauri::command]
 async fn serve(
     path: String,
-    is_public: bool,
     username: Option<String>,
     password: Option<String>,
 ) -> Result<SharedPayload, ()> {
+    let is_public = true;
     let _ = stop().await;
 
     let port = get_available_port().unwrap_or(8765);
@@ -166,7 +166,8 @@ fn main() {
         .expect("Failed to set global default subscriber");
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_aptabase::Builder::new("A-EU-3764918520").build())
+        .plugin(tauri_plugin_store::Builder::new().build())
+        .plugin(tauri_plugin_aptabase::Builder::new("A-EU-5257789286").build())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
