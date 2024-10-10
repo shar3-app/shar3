@@ -15,12 +15,10 @@ function App() {
       <Loader />
       <ContextMenu />
 
-      <nav>
-        <Nav />
-      </nav>
-      <main className="space-y-6 pb-20">
-        <Share />
+      <Nav />
 
+      <main className="space-y-6">
+        <Share />
         <HistoryList />
       </main>
 

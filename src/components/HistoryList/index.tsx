@@ -133,6 +133,11 @@ const HistoryList = () => {
             <HistoryRow
               key={history.length + 1}
               position={visibleItems % 2 ? 'even' : 'odd'}
+              onKeyDown={(event) => {
+                if (['Enter', 'Space'].includes(event?.code)) {
+                  loadMore();
+                }
+              }}
               onClick={loadMore}
             >
               <p className="w-full text-center font-medium">Load more...</p>
