@@ -4,17 +4,19 @@ import { Events, Settings, Translator } from '@shared';
 import { listen } from '@tauri-apps/api/event';
 import { type } from '@tauri-apps/plugin-os';
 import { useEffect, useState } from 'react';
+import { getSettings } from '../../../stores/settings';
 
 interface DropdownPlaceholderProps {
-  getSettings: () => Settings | null;
   T: Translator;
   isDirectory: boolean;
 }
 
-const DropdownPlaceholder = ({ getSettings, T, isDirectory }: DropdownPlaceholderProps) => {
-  const [showShortcuts, setShowSettings] = useState(getSettings()?.shortcuts ?? true);
+const DropdownPlaceholder = ({ T, isDirectory }: DropdownPlaceholderProps) => {
+  const [showShortcuts, setShowSettings] = useState(false);
 
   useEffect(() => {
+    getSettings().then((settings) => setShowSettings(settings?.shortcuts ?? true));
+
     const listenSettings = listen<Settings>(Events.SettingsUpdated, ({ payload }) =>
       setShowSettings(payload.shortcuts)
     );

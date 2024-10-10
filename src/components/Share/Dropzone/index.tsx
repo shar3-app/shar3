@@ -1,6 +1,6 @@
 import useHotkeys from '@reecelucas/react-use-hotkeys';
 import { Translator } from '@shared';
-import { getSettings } from '@utils';
+import { getSettings } from '../../../stores/settings';
 import DropdownPlaceholder from '../Placeholder';
 
 interface DropzoneProps {
@@ -11,8 +11,8 @@ interface DropzoneProps {
 }
 
 const Dropzone = ({ T, isDirectory = true, openExplorer, checkConnection }: DropzoneProps) => {
-  useHotkeys(isDirectory ? ['Control+d', 'Meta+d'] : ['Control+f', 'Meta+f'], () => {
-    if (getSettings()?.shortcuts !== false) {
+  useHotkeys(isDirectory ? ['Control+d', 'Meta+d'] : ['Control+f', 'Meta+f'], async () => {
+    if ((await getSettings())?.shortcuts !== false) {
       openExplorer(isDirectory);
     }
   });
@@ -40,7 +40,7 @@ const Dropzone = ({ T, isDirectory = true, openExplorer, checkConnection }: Drop
         htmlFor="dropzone-file"
         className="relative flex flex-col items-center px-4 justify-center w-full h-full cursor-pointer"
       >
-        <DropdownPlaceholder getSettings={getSettings} T={T} isDirectory={isDirectory} />
+        <DropdownPlaceholder T={T} isDirectory={isDirectory} />
         <input
           id="dropzone-file"
           tabIndex={-1}

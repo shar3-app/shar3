@@ -1,39 +1,34 @@
 import Button from '@components/Button';
-import { useLocalStorage, useTheme } from '@hooks';
-import { Events, Locale, LocalStorage, Settings } from '@shared';
+import { useDebounce, useTheme } from '@hooks';
+import { Events, Locale, Settings } from '@shared';
 import { emit, listen } from '@tauri-apps/api/event';
 import { toggleScroll } from '@utils';
 import { Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useT } from 'talkr';
+import { defaultSettings, getSettings, saveSettings } from '../../stores/settings';
 import SettingsCheckbox from './Checkbox';
 import LanguageSelector from './LanguageSelector';
 import TextInput from './TextInput';
 
-const defaultSettings: Settings = {
-  locale: 'en',
-  publicShare: false,
-  theme: 'dark',
-  auth: {
-    enabled: false,
-    username: 'username',
-    password: 'password'
-  },
-  shortcuts: true
-};
-
 const SettingsModal = () => {
-  const [visibility, setVisibility] = useState(false);
-  const [_, setHistoryClicks] = useState(0);
-  const { value: settings, setValue: setSettings } = useLocalStorage<Settings>(
-    LocalStorage.Settings,
-    defaultSettings
-  );
-  const { setTheme } = useTheme();
   const { T } = useT();
+  const { setTheme } = useTheme();
+  const [_, setHistoryClicks] = useState(0);
+  const [visibility, setVisibility] = useState(false);
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const debouncedSettings = useDebounce(settings, 750);
 
   useEffect(() => {
+    if (debouncedSettings) {
+      saveSettings(debouncedSettings);
+    }
+  }, [debouncedSettings]);
+
+  useEffect(() => {
+    getSettings().then((currentSettings) => setSettings(currentSettings));
+
     const listenSettings = listen<Partial<Settings>>(
       Events.UpdateSettings,
       ({ payload: newSettings }) =>
