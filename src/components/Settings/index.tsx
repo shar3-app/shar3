@@ -4,10 +4,10 @@ import { Events, Locale, Settings } from '@shared';
 import { defaultSettings, getSettings, saveSettings } from '@stores';
 import { emit, listen } from '@tauri-apps/api/event';
 import { toggleScroll } from '@utils';
-import { Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useT } from 'talkr';
+import Modal from '../Modal';
 import SettingsCheckbox from './Checkbox';
 import LanguageSelector from './LanguageSelector';
 import TextInput from './TextInput';
@@ -80,94 +80,79 @@ const SettingsModal = () => {
   };
 
   return (
-    <Modal
-      dismissible
-      show={visibility}
-      onClose={close}
-      theme={{
-        header: {
-          base: 'flex items-center justify-between rounded-t border-b p-5 dark:border-gray-600',
-          close: {
-            base: 'ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white !outline-0 border-none'
+    <Modal isOpen={visibility} onClose={close}>
+      <SettingsSections title="settings.general_settings">
+        <SettingsCheckbox
+          label={T('settings.dark_theme')}
+          isChecked={settings.theme === 'dark'}
+          onChange={(event) => handleChange('theme', event.target.checked ? 'dark' : 'light')}
+        />
+        <SettingsCheckbox
+          label={T('settings.shortcuts')}
+          isChecked={settings.shortcuts}
+          onChange={(event) => handleChange('shortcuts', event.target.checked)}
+        />
+      </SettingsSections>
+
+      <SettingsSections title="settings.auth">
+        <SettingsCheckbox
+          label={T('settings.auth_label')}
+          isChecked={settings.auth?.enabled}
+          onChange={(event) =>
+            handleChange('auth', {
+              enabled: event.target.checked,
+              username: settings.auth?.username,
+              password: settings.auth?.password
+            })
           }
-        }
-      }}
-    >
-      <Modal.Header>{T('settings.title')}</Modal.Header>
-      <Modal.Body>
-        <SettingsSections title="settings.general_settings">
-          <SettingsCheckbox
-            label={T('settings.dark_theme')}
-            isChecked={settings.theme === 'dark'}
-            onChange={(event) => handleChange('theme', event.target.checked ? 'dark' : 'light')}
-          />
-          <SettingsCheckbox
-            label={T('settings.shortcuts')}
-            isChecked={settings.shortcuts}
-            onChange={(event) => handleChange('shortcuts', event.target.checked)}
-          />
-        </SettingsSections>
+        />
+        {settings.auth?.enabled && (
+          // TODO on focus inputs show warning not updating in case is sharing
+          <>
+            <fieldset>
+              <TextInput
+                className="mb-2"
+                name="username"
+                placeholder={T('settings.auth_username')}
+                value={settings.auth?.username}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChange('auth', {
+                    enabled: settings.auth?.enabled,
+                    username: event.target.value || null,
+                    password: settings.auth?.password
+                  })
+                }
+              />
+              <TextInput
+                name="password"
+                placeholder={T('settings.auth_password')}
+                value={settings.auth?.password}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChange('auth', {
+                    enabled: settings.auth?.enabled,
+                    password: event.target.value || null,
+                    username: settings.auth?.username
+                  })
+                }
+              />
+              {((settings.auth?.username && !settings.auth?.password) ||
+                (settings.auth?.password && !settings.auth?.username)) && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-500 font-medium">
+                  {T('settings.auth_warning')}
+                </p>
+              )}
+            </fieldset>
+          </>
+        )}
+      </SettingsSections>
 
-        <SettingsSections title="settings.auth">
-          <SettingsCheckbox
-            label={T('settings.auth_label')}
-            isChecked={settings.auth?.enabled}
-            onChange={(event) =>
-              handleChange('auth', {
-                enabled: event.target.checked,
-                username: settings.auth?.username,
-                password: settings.auth?.password
-              })
-            }
-          />
-          {settings.auth?.enabled && (
-            // TODO on focus inputs show warning not updating in case is sharing
-            <>
-              <fieldset>
-                <TextInput
-                  className="mb-2"
-                  name="username"
-                  placeholder={T('settings.auth_username')}
-                  value={settings.auth?.username}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    handleChange('auth', {
-                      enabled: settings.auth?.enabled,
-                      username: event.target.value || null,
-                      password: settings.auth?.password
-                    })
-                  }
-                />
-                <TextInput
-                  name="password"
-                  placeholder={T('settings.auth_password')}
-                  value={settings.auth?.password}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    handleChange('auth', {
-                      enabled: settings.auth?.enabled,
-                      password: event.target.value || null,
-                      username: settings.auth?.username
-                    })
-                  }
-                />
-                {((settings.auth?.username && !settings.auth?.password) ||
-                  (settings.auth?.password && !settings.auth?.username)) && (
-                  <p className="mt-2 text-sm text-red-600 dark:text-red-500 font-medium">
-                    {T('settings.auth_warning')}
-                  </p>
-                )}
-              </fieldset>
-            </>
-          )}
-        </SettingsSections>
+      <SettingsSections title="settings.other_settings">
+        <Button onClick={clearHistory}>{T('settings.clean_history')}</Button>
+      </SettingsSections>
 
-        <SettingsSections title="settings.other_settings">
-          <Button onClick={clearHistory}>{T('settings.clean_history')}</Button>
-        </SettingsSections>
-
-        <SettingsSections title="settings.language" className="!mb-0">
-          <LanguageSelector onChange={(locale: Locale) => handleChange('locale', locale)} />
-        </SettingsSections>
-      </Modal.Body>
+      <SettingsSections title="settings.language" className="!mb-0">
+        <LanguageSelector onChange={(locale: Locale) => handleChange('locale', locale)} />
+      </SettingsSections>
     </Modal>
   );
 };
