@@ -1,13 +1,13 @@
 import Button from '@components/Button';
 import { useDebounce, useTheme } from '@hooks';
 import { Events, Locale, Settings } from '@shared';
+import { defaultSettings, getSettings, saveSettings } from '@stores';
 import { emit, listen } from '@tauri-apps/api/event';
 import { toggleScroll } from '@utils';
 import { Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useT } from 'talkr';
-import { defaultSettings, getSettings, saveSettings } from '../../stores/settings';
 import SettingsCheckbox from './Checkbox';
 import LanguageSelector from './LanguageSelector';
 import TextInput from './TextInput';

@@ -7,6 +7,7 @@ export default defineConfig(async () => ({
   resolve: {
     alias: {
       '@hooks': resolve(__dirname, 'src/hooks/index.ts'),
+      '@stores': resolve(__dirname, 'src/stores/index.ts'),
       '@utils': resolve(__dirname, 'src/utils/index.ts'),
       '@components': resolve(__dirname, 'src/components'),
       '@icons': resolve(__dirname, 'src/components/icons'),

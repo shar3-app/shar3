@@ -23,6 +23,7 @@
       "@components/*": ["./src/components/*"],
       "@icons": ["./src/components/icons/index.ts"],
       "@hooks": ["./src/hooks/index.ts"],
+      "@stores": ["./src/stores/index.ts"],
       "@utils": ["./src/utils/index.ts"],
       "@shared": ["./shared/index.ts", "./shared/*"]
     }
