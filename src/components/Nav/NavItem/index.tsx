@@ -8,12 +8,16 @@ const NavItem = ({ title, children, onClick, className, ...props }: ComponentPro
       onClick={onClick}
       {...props}
     >
-      <Tooltip content={title} arrow={false} className="!-top-10">
-        <button type="button" className="p-1 h-full rounded-full">
-          {children}
-          <span className="sr-only">{title}</span>
-        </button>
-      </Tooltip>
+      {title ? (
+        <Tooltip content={title} arrow={false} className="!-top-10" placement="right">
+          <button type="button" className="p-1 h-full rounded-full">
+            {children}
+            <span className="sr-only">{title}</span>
+          </button>
+        </Tooltip>
+      ) : (
+        children
+      )}
     </div>
   );
 };
