@@ -28,7 +28,7 @@ pub async fn render_content(selected_path: &str) -> Result<Response<Body>, warp:
                 "svg" => serve_svg(&file_path).await,
                 _ => serve_file(&file_path).await,
             },
-            None => Err(warp::reject::not_found()),
+            None => serve_file(&file_path).await,
         }
     } else {
         serve_listing(path).await
