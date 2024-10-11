@@ -28,7 +28,7 @@ const Dropzone = ({ T, isDirectory = true, openExplorer, checkConnection }: Drop
 
   return (
     <div
-      className={`relative flex items-center justify-center w-full rounded-lg transition-all h-[35vh] border-2 border-gray-300 border-dashed dark:border-gray-600 dark:hover:border-gray-500 bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700`}
+      className={`relative flex items-center justify-center w-full rounded-lg transition-all h-[35vh] border-2 border-gray-300 border-dashed dark:border-gray-600 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700`}
     >
       <label
         tabIndex={1}

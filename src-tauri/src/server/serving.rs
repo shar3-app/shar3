@@ -14,21 +14,27 @@ use warp::http::header::CONTENT_TYPE;
 use warp::http::Response;
 use warp::hyper::Body;
 
-use super::utils::remove_last_char;
+use super::utils::{get_filename, remove_last_char};
 
 pub async fn render_content(selected_path: &str) -> Result<Response<Body>, warp::Rejection> {
     let path = Path::new(selected_path);
     if !path.is_dir() {
         let file_path = remove_last_char(selected_path);
-        match path.extension().and_then(|e| e.to_str()) {
-            Some(ext) => match ext.to_lowercase().as_str() {
-                "pdf" => serve_pdf(&file_path).await,
-                "jpg" | "jpeg" | "png" | "apng" | "gif" | "bmp" | "webp" | "avif" | "tiff"
-                | "tif" => serve_image(&file_path, ext).await,
-                "svg" => serve_svg(&file_path).await,
-                _ => serve_file(&file_path).await,
-            },
-            None => serve_file(&file_path).await,
+        let file_name = get_filename(path);
+
+        if file_name.starts_with(".") {
+            serve_file(&file_path).await
+        } else {
+            match path.extension().and_then(|e| e.to_str()) {
+                Some(ext) => match ext.to_lowercase().as_str() {
+                    "pdf" => serve_pdf(&file_path).await,
+                    "jpg" | "jpeg" | "png" | "apng" | "gif" | "bmp" | "webp" | "avif" | "tiff"
+                    | "tif" => serve_image(&file_path, ext).await,
+                    "svg" => serve_svg(&file_path).await,
+                    _ => serve_file(&file_path).await,
+                },
+                None => Err(warp::reject::not_found()),
+            }
         }
     } else {
         serve_listing(path).await

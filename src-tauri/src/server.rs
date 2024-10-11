@@ -54,7 +54,7 @@ fn with_auth(
             let pwd = pwd.clone();
             async move {
                 if !has_auth {
-                    return Ok(());
+                    return Ok::<(), Rejection>(());
                 }
 
                 if let Some(header_value) = auth_header {
