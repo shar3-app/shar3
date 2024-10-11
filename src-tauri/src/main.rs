@@ -166,6 +166,7 @@ fn main() {
         .expect("Failed to set global default subscriber");
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_nosleep::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_aptabase::Builder::new("A-EU-5257789286").build())
         .plugin(tauri_plugin_http::init())
