@@ -21,17 +21,8 @@ struct DownloadQuery {
     file_path: String,
 }
 
-pub fn get_local_ip() -> Option<IpAddr> {
-    get_if_addrs().ok().and_then(|interfaces| {
-        interfaces
-            .into_iter()
-            .find(|iface| !iface.is_loopback())
-            .map(|iface| iface.ip())
-    })
-}
-
 pub fn get_available_port() -> Option<u16> {
-    let mut ports: Vec<u16> = (8000..9000).collect();
+    let mut ports: Vec<u16> = (1024..49151).collect();
     ports.shuffle(&mut rand::thread_rng());
     ports.into_iter().find(|port| port_is_available(*port))
 }

@@ -26,11 +26,11 @@ html.dark body {
 
 /* TAB USABILITY */
 html :focus {
-  outline: 2px solid #111827;
+  outline: 2px dashed #111827;
   z-index: 5;
 }
 html.dark :focus {
-  outline: 2px solid #f9fafb;
+  outline: 2px dashed #f9fafb;
 }
 
 /* When mouse is detected, ALL focused elements have outline removed. */

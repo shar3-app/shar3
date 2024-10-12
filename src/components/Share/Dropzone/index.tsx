@@ -38,7 +38,7 @@ const Dropzone = ({ T, isDirectory = true, openExplorer, checkConnection }: Drop
           }
         }}
         htmlFor="dropzone-file"
-        className="relative flex flex-col items-center px-4 justify-center w-full h-full cursor-pointer"
+        className="relative flex flex-col items-center px-4 justify-center w-full h-full cursor-pointer rounded-lg"
       >
         <DropdownPlaceholder T={T} isDirectory={isDirectory} />
         <input

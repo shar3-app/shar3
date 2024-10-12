@@ -1,68 +1,88 @@
-use bore_cli::client::Client;
 use once_cell::sync::Lazy;
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    mpsc, Arc, Mutex,
+use std::process::{Child, Command, Stdio};
+use std::{
+    io::{BufRead, BufReader, Error, ErrorKind},
+    sync::{mpsc, Arc, Mutex},
 };
-use tokio::runtime::Runtime;
-use tracing::info;
+use tracing::{error, info};
 
-static GLOBAL_TUNNEL: Lazy<Arc<Mutex<Option<(Runtime, Arc<AtomicBool>)>>>> =
-    Lazy::new(|| Arc::new(Mutex::new(None)));
+static GLOBAL_TUNNEL: Lazy<Arc<Mutex<Option<Child>>>> = Lazy::new(|| Arc::new(Mutex::new(None)));
 
-pub fn start_tunnel(port: u16) -> Result<String, anyhow::Error> {
+fn extract_url(line: &str) -> Option<String> {
+    line.find("http").and_then(|start| {
+        line.find(".serveo.net")
+            .map(|end| line[start..=end + 10].to_string())
+    })
+}
+
+pub fn start_tunnel(port: u16) -> Result<String, Error> {
+    // Create a channel to communicate the URL
     let (tx, rx) = mpsc::channel();
-    let mut global_tunnel_lock = GLOBAL_TUNNEL.lock().unwrap();
 
-    if global_tunnel_lock.is_some() {
-        return Err(anyhow::Error::msg("Tunnel is already running."));
+    // Lock the global child process
+    let mut global_child_lock = GLOBAL_TUNNEL.lock().unwrap();
+
+    // Check if a tunnel process is already running
+    if global_child_lock.is_some() {
+        return Err(Error::new(
+            ErrorKind::AlreadyExists,
+            "Tunnel is already running.",
+        ));
     }
 
-    let runtime = Runtime::new().expect("Failed to create Tokio runtime");
-    let stop_signal = Arc::new(AtomicBool::new(false));
-    let client_stop_signal = Arc::clone(&stop_signal);
+    let mut child = Command::new("ssh")
+        .arg("-o")
+        .arg("StrictHostKeyChecking=no")
+        .arg("-T")
+        .arg("-R")
+        .arg(format!("80:localhost:{}", port))
+        .arg("serveo.net")
+        .stdout(Stdio::piped()) // Capture the stdout
+        .spawn()
+        .expect("Failed to start SSH process");
+    info!("Tunnel started.");
+    let stdout = child.stdout.take().expect("Failed to capture stdout");
 
-    let client_future = async move {
-        let client = Client::new(
-            "localhost",
-            port,
-            "tunnel.shar3.app",
-            0,
-            Some("5h4r3-secret_2O24"),
-        )
-        .await?;
-        let remote_url = format!("https://{}.shar3.app", client.remote_port());
-        tx.send(remote_url).expect("Failed to send URL");
+    // Store the child process in the global state immediately
+    *global_child_lock = Some(child);
 
-        tokio::select! {
-            _ = client.listen() => {},
-            _ = async {
-                while !client_stop_signal.load(Ordering::Relaxed) {
-                    tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+    // Spawn a new thread to handle the output reading
+    let tx = tx.clone();
+    std::thread::spawn(move || {
+        let reader = BufReader::new(stdout);
+        for line in reader.lines() {
+            let line = match line {
+                Ok(l) => l,
+                Err(e) => {
+                    error!("Error reading line: {}", e);
+                    continue;
                 }
-            } => {
-                info!("Stopping the client.");
+            };
+
+            if line.trim_end().ends_with("serveo.net") {
+                if let Some(url) = extract_url(&line) {
+                    tx.send(url).expect("Failed to send URL");
+                    break;
+                }
             }
         }
+    });
 
-        Ok::<(), anyhow::Error>(())
-    };
-
-    runtime.spawn(client_future);
-    *global_tunnel_lock = Some((runtime, stop_signal));
-
+    // Wait for the URL to be received from the channel
     match rx.recv() {
         Ok(url) => Ok(url),
-        Err(e) => Err(anyhow::Error::msg(format!("Failed to receive URL: {}", e))),
+        Err(e) => Err(Error::new(
+            ErrorKind::NotFound,
+            format!("Failed to receive URL: {}", e),
+        )),
     }
 }
 
 pub fn kill_tunnel() -> Result<(), anyhow::Error> {
     let mut tunnel_lock = GLOBAL_TUNNEL.lock().unwrap();
 
-    if let Some((runtime, stop_signal)) = tunnel_lock.take() {
-        stop_signal.store(true, Ordering::Relaxed);
-        runtime.shutdown_background();
+    if let Some(mut child) = tunnel_lock.take() {
+        child.kill()?; // Kill the process
         info!("Tunnel stopped.");
     } else {
         info!("No tunnel is running.");

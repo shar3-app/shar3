@@ -9,7 +9,6 @@ use base64::{engine::general_purpose::STANDARD, Engine};
 use image::{load_from_memory_with_format, ImageFormat};
 use once_cell::sync::Lazy;
 use serde::Serialize;
-use std::net::{IpAddr, Ipv4Addr};
 use std::path::Path;
 use std::process::Command;
 use std::sync::Arc;
@@ -18,7 +17,7 @@ use tokio::task::JoinHandle;
 use tracing::{debug, error, info, Level};
 use tracing_subscriber::FmtSubscriber;
 
-use server::{get_available_port, get_local_ip, run_server};
+use server::{get_available_port, run_server};
 use tunnel::{kill_tunnel, start_tunnel};
 
 // Global task storage using Lazy and Mutex
@@ -79,11 +78,9 @@ async fn serve(
     username: Option<String>,
     password: Option<String>,
 ) -> Result<SharedPayload, ()> {
-    let is_public = true;
     let _ = stop().await;
 
     let port = get_available_port().unwrap_or(8765);
-    let local_ip = get_local_ip().unwrap_or(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
     let success = Arc::new(Mutex::new(true));
     let path_clone = path.clone();
 
@@ -100,13 +97,13 @@ async fn serve(
     *SERVER_TASK.lock().await = Some(server_task);
 
     let is_directory = Path::new(&path).is_dir();
-    let mut final_url = format!("http://{}:{}", local_ip, port);
+    let mut url = String::from("");
 
-    let final_success = if *success.lock().await && is_public {
+    let tunnel_success = if *success.lock().await {
         match start_tunnel(port) {
             Ok(tunnel_url) => {
                 info!("Started Bore tunnel successfully");
-                final_url = tunnel_url;
+                url = tunnel_url;
                 true
             }
             Err(error) => {
@@ -117,11 +114,11 @@ async fn serve(
     } else {
         *success.lock().await
     };
-
+    info!("{}::{}", url, tunnel_success);
     Ok(SharedPayload {
         path,
-        url: final_url,
-        success: final_success,
+        url,
+        success: tunnel_success,
         is_directory,
     })
 }

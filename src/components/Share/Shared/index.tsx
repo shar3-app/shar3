@@ -3,7 +3,7 @@ import { useTheme } from '@hooks';
 import { CopyIcon, FileIcon, FolderIcon, MailIcon, TelegramIcon, WhatsappIcon } from '@icons';
 import { SharePayload, Translator } from '@shared';
 import { open } from '@tauri-apps/plugin-shell';
-import { copyQrToClipboard, copyURLToClipboard, getFileName } from '@utils';
+import { copyQrToClipboard, copyURLToClipboard, getFileName, shortenUrl } from '@utils';
 import { Tooltip } from 'flowbite-react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
@@ -28,7 +28,7 @@ const Shared = ({ shared, onStop, T }: SharedProps) => {
 
   return (
     <div className="flex w-full h-full items-center p-6 gap-8">
-      <div className="flex flex-col h-full items-center w-1/2 min-[480px]:w-[40%] min-[520px]:w-[35%] transition-[width] duration-500">
+      <div className="flex flex-col h-full items-center w-1/2 min-[500px]:w-[40%] min-[560px]:w-[35%] transition-[width] duration-500">
         <Tooltip content={T('generic.copy_image')} placement="bottom" arrow={false}>
           <QRCode
             id={qrId}
@@ -41,21 +41,23 @@ const Shared = ({ shared, onStop, T }: SharedProps) => {
           />
         </Tooltip>
       </div>
-      <div className="flex flex-col w-auto gap-6 text-[#101827] dark:text-white">
+      <div className="flex flex-col gap-6 text-[#101827] dark:text-white w-1/2 min-[500px]:w-[60%] min-[560px]:w-[65%] ">
         <div className="flex flex-col">
-          <div className="flex gap-1.5 items-start">
+          <div className="flex gap-2">
             {shared.isDirectory ? (
-              <FolderIcon className="-ml-0.5" />
+              <FolderIcon className="w-5 h-5 -ml-0.5 mt-1" />
             ) : (
-              <FileIcon className="-ml-1" />
+              <FileIcon className="w-5 h-5 -ml-1 mt-0.5" />
             )}
-            <span className="text-lg font-semibold">{getFileName(shared.path)}</span>
+            <span className="block text-lg font-semibold whitespace-nowrap text-ellipsis overflow-hidden w-4/5">
+              {getFileName(shared.path)}
+            </span>
           </div>
 
           <div className="group flex cursor-pointer gap-1.5 w-full items-center text-[#3a4049] dark:text-[#b6c0ce]">
             <Tooltip content={T('generic.navigate_url')} placement="bottom" arrow={false}>
               <span className="text-sm group-hover:underline" onClick={() => open(shared.url)}>
-                {shared.url}
+                {shortenUrl(shared.url)}
               </span>
             </Tooltip>
             <Tooltip content={T('generic.copy_url')} placement="bottom" arrow={false}>

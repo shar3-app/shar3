@@ -5,5 +5,6 @@ export * from './file';
 export * from './mailto';
 export * from './relativeTime';
 export * from './scroll';
+export * from './shortenUrl';
 export * from './trackError';
 export * from './updater';
