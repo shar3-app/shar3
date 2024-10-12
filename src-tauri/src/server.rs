@@ -2,12 +2,10 @@ mod serving;
 mod utils;
 
 use base64::{engine::general_purpose::STANDARD, Engine};
-use get_if_addrs::get_if_addrs;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
 use serving::render_content;
 use std::convert::Infallible;
-use std::net::IpAddr;
 use std::{net::TcpListener, path::PathBuf};
 use utils::{decode_percent_encoded_path, stream_file};
 use warp::http::header::HeaderValue;

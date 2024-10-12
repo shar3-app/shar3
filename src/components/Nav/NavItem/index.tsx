@@ -1,4 +1,4 @@
-import { Tooltip } from 'flowbite-react';
+import { Tooltip } from '@components/Tooltip';
 import { ComponentProps } from 'react';
 
 const NavItem = ({ title, children, onClick, className, ...props }: ComponentProps<'div'>) => {
@@ -9,7 +9,7 @@ const NavItem = ({ title, children, onClick, className, ...props }: ComponentPro
       {...props}
     >
       {title ? (
-        <Tooltip content={title} arrow={false} className="!-top-10" placement="right">
+        <Tooltip content={title}>
           <button type="button" className="p-1 h-full rounded-full">
             {children}
             <span className="sr-only">{title}</span>

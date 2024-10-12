@@ -1,3 +1,4 @@
+import { TooltipProvider } from '@components/Tooltip';
 import { Locale, Settings } from '@shared';
 import { Flowbite } from 'flowbite-react';
 import React from 'react';
@@ -28,9 +29,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         mode: 'dark'
       }}
     >
-      <Talkr languages={{ en, es, de, fr }} defaultLanguage={locale || 'en'}>
-        <App />
-      </Talkr>
+      <TooltipProvider delayDuration={150}>
+        <Talkr languages={{ en, es, de, fr }} defaultLanguage={locale || 'en'}>
+          <App />
+        </Talkr>
+      </TooltipProvider>
     </Flowbite>
   </React.StrictMode>
 );

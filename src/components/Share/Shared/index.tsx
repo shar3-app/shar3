@@ -1,10 +1,10 @@
 import Button from '@components/Button';
+import { Tooltip } from '@components/Tooltip';
 import { useTheme } from '@hooks';
 import { CopyIcon, FileIcon, FolderIcon, MailIcon, TelegramIcon, WhatsappIcon } from '@icons';
 import { SharePayload, Translator } from '@shared';
 import { open } from '@tauri-apps/plugin-shell';
 import { copyQrToClipboard, copyURLToClipboard, getFileName, shortenUrl } from '@utils';
-import { Tooltip } from 'flowbite-react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
 import StopShare from '../StopShare';
@@ -29,7 +29,7 @@ const Shared = ({ shared, onStop, T }: SharedProps) => {
   return (
     <div className="flex w-full h-full items-center p-6 gap-8">
       <div className="flex flex-col h-full items-center w-1/2 min-[500px]:w-[40%] min-[560px]:w-[35%] transition-[width] duration-500">
-        <Tooltip content={T('generic.copy_image')} placement="bottom" arrow={false}>
+        <Tooltip content={T('generic.copy_image')}>
           <QRCode
             id={qrId}
             value={shared.url ?? ''}
@@ -55,12 +55,12 @@ const Shared = ({ shared, onStop, T }: SharedProps) => {
           </div>
 
           <div className="group flex cursor-pointer gap-1.5 w-full items-center text-[#3a4049] dark:text-[#b6c0ce]">
-            <Tooltip content={T('generic.navigate_url')} placement="bottom" arrow={false}>
+            <Tooltip content={T('generic.navigate_url')}>
               <span className="text-sm group-hover:underline" onClick={() => open(shared.url)}>
                 {shortenUrl(shared.url)}
               </span>
             </Tooltip>
-            <Tooltip content={T('generic.copy_url')} placement="bottom" arrow={false}>
+            <Tooltip content={T('generic.copy_url')} side="left">
               <CopyIcon
                 className="w-4"
                 onClick={() =>

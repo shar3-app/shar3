@@ -17,7 +17,8 @@ module.exports = {
         primary: '#7f5af0',
         primaryHover: '#6546c3',
         secondary: '#72757e',
-        secondaryHover: '#52545c'
+        secondaryHover: '#52545c',
+        popover: '#374151'
       }
     }
   },
