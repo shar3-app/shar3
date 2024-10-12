@@ -5,7 +5,7 @@ import { Events, History, HistoryItem, Locale, LocalStorage } from '@shared';
 import { invoke } from '@tauri-apps/api/core';
 import { emit, listen } from '@tauri-apps/api/event';
 import { type } from '@tauri-apps/plugin-os';
-import { from } from '@utils';
+import { from, getFileName } from '@utils';
 import { MouseEvent as ME, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useT } from 'talkr';
@@ -41,9 +41,6 @@ const HistoryList = () => {
     };
   }, []);
 
-  const getFolderName = (path: string) =>
-    path.slice(path.lastIndexOf(type() === 'windows' ? '\\' : '/') + 1);
-
   const shareHistoryItem = (item: HistoryItem) => {
     emit(Events.Share, item.path);
   };
@@ -56,7 +53,7 @@ const HistoryList = () => {
     setHistory((currHistory) => currHistory.filter((hi) => hi.sharedAt !== historyItem.sharedAt));
     toast.success(
       T('toasts.delete_entry', {
-        filename: getFolderName(historyItem.path)
+        filename: getFileName(historyItem.path)
       })
     );
   };
@@ -114,9 +111,9 @@ const HistoryList = () => {
                   <div className="flex flex-col w-[80%]">
                     <p
                       className="overflow-hidden text-ellipsis"
-                      title={getFolderName(historyItem.path)}
+                      title={getFileName(historyItem.path)}
                     >
-                      {getFolderName(historyItem.path)}
+                      {getFileName(historyItem.path)}
                     </p>
                     <span className="text-[.65rem] font-light whitespace-nowrap overflow-hidden text-ellipsis text-left rtl">
                       {type() === 'windows' ? historyItem.path : historyItem.path.replace('/', '')}

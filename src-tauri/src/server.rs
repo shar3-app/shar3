@@ -108,6 +108,13 @@ pub async fn run_server(
     username: Option<String>,
     password: Option<String>,
 ) -> Result<(), Rejection> {
+    let download_route = warp::path("d0wnl04d_f1l3")
+        .and(warp::query::<DownloadQuery>())
+        .and_then(move |query: DownloadQuery| {
+            let file_path = query.file_path.clone();
+            async move { stream_file(file_path).await }
+        });
+
     let static_files = warp::path::tail().and_then(move |tail: warp::path::Tail| {
         let path_for_closure = path.clone();
         async move {
@@ -122,16 +129,9 @@ pub async fn run_server(
         }
     });
 
-    let download_route = warp::path("d0wnl04d_f1l3")
-        .and(warp::query::<DownloadQuery>())
-        .and_then(move |query: DownloadQuery| {
-            let file_path = query.file_path.clone();
-            async move { stream_file(file_path).await }
-        });
-
     let auth_filter = with_auth(username, password);
     let routes = auth_filter
-        .and(static_files.or(download_route))
+        .and(download_route.or(static_files))
         .recover(handle_rejection);
 
     warp::serve(routes).run(([0, 0, 0, 0], port)).await;

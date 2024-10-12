@@ -24,6 +24,7 @@
     "os:default",
     "http:default",
     "aptabase:allow-track-event",
-    "store:default"
+    "store:default",
+    "process:default"
   ]
 }

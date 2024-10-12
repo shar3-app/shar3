@@ -1,12 +1,13 @@
 {
   "name": "shar3",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
     "dev:web": "vite",
     "build:web": "tsc && vite build",
+    "build:mac:export": "export TAURI_SIGNING_PRIVATE_KEY=\"/Users/davi/.tauri/myapp.key\" && export TAURI_SIGNING_PRIVATE_KEY_PASSWORD=\"shar3\"",
     "build:mac": "tauri build --target aarch64-apple-darwin",
     "build:mac:intel": "tauri build --target x86_64-apple-darwin",
     "build:mac:universal": "tauri build --target universal-apple-darwin",
@@ -22,8 +23,10 @@
     "@tauri-apps/plugin-dialog": "~2.0.0",
     "@tauri-apps/plugin-http": "~2.0.0",
     "@tauri-apps/plugin-os": "~2.0.0",
+    "@tauri-apps/plugin-process": "~2",
     "@tauri-apps/plugin-shell": "~2.0.0",
     "@tauri-apps/plugin-store": "~2.0.0",
+    "@tauri-apps/plugin-updater": "~2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tauri-plugin-nosleep-api": "^0.1.1"

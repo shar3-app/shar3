@@ -2,7 +2,6 @@ import { SVGProps } from 'react';
 
 export default (props: SVGProps<SVGSVGElement>) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -14,6 +13,8 @@ export default (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" />
+    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+    <path d="M7 11l5 5l5 -5" />
+    <path d="M12 4l0 12" />
   </svg>
 );

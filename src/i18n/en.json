@@ -8,6 +8,7 @@
   "generic": {
     "or": "or",
     "click_select": "Click or drop",
+    "sharing": "Sharing \"__filename__\"",
     "or_drag": {
       "directory": " to share a folder",
       "file": " to share a file"
@@ -16,8 +17,8 @@
     "share_url": "Hey! I am sharing some files with you using the Shar3 app:",
     "navigate_url": "Click to navigate to the URL",
     "share": "Share on:",
-    "copy_url": "Copy URL",
-    "copy_image": "Copy image",
+    "copy_url": "Copy URL to clipboard",
+    "copy_image": "Copy QR image to clipboard",
     "qr_copied": {
       "loading": "Copying QR to clipboard...",
       "success": "QR image copied successfully!",

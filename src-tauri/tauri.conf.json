@@ -1,4 +1,8 @@
 {
+  "productName": "Shar3",
+  "mainBinaryName": "Shar3",
+  "version": "0.0.1",
+  "identifier": "dev.davru.shar3",
   "build": {
     "beforeDevCommand": "pnpm dev:web",
     "beforeBuildCommand": "pnpm build:web",
@@ -6,6 +10,7 @@
     "devUrl": "http://localhost:1420"
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "targets": "all",
     "icon": [
@@ -16,11 +21,14 @@
       "icons/icon.ico"
     ]
   },
-  "productName": "Shar3",
-  "mainBinaryName": "Shar3",
-  "version": "0.1.0",
-  "identifier": "dev.davru.shar3",
-  "plugins": {},
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://raw.githubusercontent.com/shar3-app/shar3-updates/refs/heads/main/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJDQkZGNEU3NDE0OTQ2MzEKUldReFJrbEI1L1MvTEljaUwxdlp3WUdOZnRZQWFyUTRoQmdtNFowSWQrOTdRZFcyWkFPeXdVL0cK"
+    }
+  },
   "app": {
     "security": {
       "csp": null
@@ -28,10 +36,11 @@
     "windows": [
       {
         "title": "Shar3",
-        "minWidth": 440,
+        "minWidth": 460,
         "minHeight": 580,
         "width": 525,
         "height": 700,
+        "maxWidth": 580,
         "resizable": true,
         "maximizable": false,
         "fullscreen": false,

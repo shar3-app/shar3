@@ -16,7 +16,7 @@ import Shared from './Shared';
 const appWindow = getCurrentWebviewWindow();
 
 const Share = () => {
-  const [shared, setShared] = useState<string | null>(null);
+  const [shared, setShared] = useState<SharePayload | null>(null);
   const { setValue: setIsSharing } = useLocalStorage(LocalStorage.Sharing, false);
   const isConnected = useConnection();
   const { T } = useT();
@@ -57,21 +57,21 @@ const Share = () => {
     return isConnected;
   };
 
-  const updateSharedUrl = ({ path, url, success, isDirectory }: SharePayload): void => {
+  const updateSharedUrl = (sharePayload: SharePayload): void => {
     setLoading(false);
 
-    if (success) {
-      setShared(url);
+    if (sharePayload.success) {
+      setShared(sharePayload);
       emit(Events.UpdateHistory, [
         {
-          path,
-          isDirectory,
+          path: sharePayload.path,
+          isDirectory: sharePayload.isDirectory,
           sharedAt: Date.now()
         }
       ]);
     } else {
       toast.error(T('toasts.sharing_error'));
-      trackError(ErrorEvent.UpdateUrl, { path, url, success, isDirectory });
+      trackError(ErrorEvent.UpdateUrl, sharePayload);
     }
   };
 

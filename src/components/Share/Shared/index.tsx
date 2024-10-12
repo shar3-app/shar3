@@ -1,10 +1,9 @@
 import Button from '@components/Button';
-import Link from '@components/Link';
 import { useTheme } from '@hooks';
-import { EmailIcon, TelegramIcon, WhatsappIcon } from '@icons';
-import { Translator } from '@shared';
+import { CopyIcon, FileIcon, FolderIcon, MailIcon, TelegramIcon, WhatsappIcon } from '@icons';
+import { SharePayload, Translator } from '@shared';
 import { open } from '@tauri-apps/plugin-shell';
-import { copyQrToClipboard, copyURLToClipboard } from '@utils';
+import { copyQrToClipboard, copyURLToClipboard, getFileName } from '@utils';
 import { Tooltip } from 'flowbite-react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
@@ -12,12 +11,9 @@ import StopShare from '../StopShare';
 
 interface SharedProps {
   onStop: () => void;
-  shared: string;
+  shared: SharePayload;
   T: Translator;
 }
-
-const iconClasses =
-  'duration-200 ease inline-flex items-center mr-1.5 transition p-2.5 rounded-md text-white bg-secondary hover:bg-secondaryHover';
 
 const Shared = ({ shared, onStop, T }: SharedProps) => {
   const { theme } = useTheme();
@@ -31,60 +27,84 @@ const Shared = ({ shared, onStop, T }: SharedProps) => {
     });
 
   return (
-    <div className="flex w-full h-full items-center justify-center py-8 px-9 gap-9 sm:gap-12">
-      <div className="flex h-full items-center w-1/2">
-        <Tooltip content={T('generic.navigate_url')} placement="bottom" arrow={false}>
+    <div className="flex w-full h-full items-center p-6 gap-8">
+      <div className="flex flex-col h-full items-center w-1/2 min-[480px]:w-[40%] min-[520px]:w-[35%] transition-[width] duration-500">
+        <Tooltip content={T('generic.copy_image')} placement="bottom" arrow={false}>
           <QRCode
             id={qrId}
-            value={shared ?? ''}
+            value={shared.url ?? ''}
             size={1024}
             bgColor={'transparent'}
             className="w-full h-full rounded-md cursor-pointer max-w-full"
-            onClick={() => open(shared)}
+            onClick={() => copyToast(copyQrToClipboard(qrId, theme), 'generic.qr_copied.loading')}
             fgColor={theme() === 'dark' ? '#b6c0ce' : '#3a4049'}
           />
         </Tooltip>
       </div>
-      <div className="flex flex-col text-gray-900 dark:text-gray-300 text-sm sm:text-base w-1/2 justify-center h-full">
-        <Button
-          onClick={() => copyToast(copyURLToClipboard(shared), 'generic.url_copied.loading')}
-          className="mb-2.5 sm:mb-3.5"
-        >
-          {T('generic.copy_url')}
-        </Button>
-        <Button
-          onClick={() => copyToast(copyQrToClipboard(qrId, theme), 'generic.qr_copied.loading')}
-          className="mb-6 sm:mb-8"
-        >
-          {T('generic.copy_image')}
-        </Button>
+      <div className="flex flex-col w-auto gap-6 text-[#101827] dark:text-white">
+        <div className="flex flex-col">
+          <div className="flex gap-1.5 items-start">
+            {shared.isDirectory ? (
+              <FolderIcon className="-ml-0.5" />
+            ) : (
+              <FileIcon className="-ml-1" />
+            )}
+            <span className="text-lg font-semibold">{getFileName(shared.path)}</span>
+          </div>
 
-        <span className="mb-2.5 block">{T('generic.share')}</span>
-        <div className="sharing-buttons flex flex-wrap">
-          <Link
-            href={`https://wa.me/?text=${T('generic.share_url')}%20%0D%0A%0D%0A${shared}`}
-            aria-label="Share on Whatsapp"
-            draggable="false"
-            className={iconClasses}
-          >
-            <WhatsappIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-          </Link>
-          <Link
-            href={`https://telegram.me/share/url?text=${T('generic.share_url')}&amp;url=${shared}`}
-            aria-label="Share on Telegram"
-            draggable="false"
-            className={iconClasses}
-          >
-            <TelegramIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-          </Link>
-          <Link
-            href={`mailto:?subject=${T('generic.share_mail_subject')}&body=${T('generic.share_url')}%20%0D%0A%0D%0A${shared}`}
-            aria-label="Share by Email"
-            draggable="false"
-            className={iconClasses}
-          >
-            <EmailIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-          </Link>
+          <div className="group flex cursor-pointer gap-1.5 w-full items-center text-[#3a4049] dark:text-[#b6c0ce]">
+            <Tooltip content={T('generic.navigate_url')} placement="bottom" arrow={false}>
+              <span className="text-sm group-hover:underline" onClick={() => open(shared.url)}>
+                {shared.url}
+              </span>
+            </Tooltip>
+            <Tooltip content={T('generic.copy_url')} placement="bottom" arrow={false}>
+              <CopyIcon
+                className="w-4"
+                onClick={() =>
+                  copyToast(copyURLToClipboard(shared.url), 'generic.url_copied.loading')
+                }
+              />
+            </Tooltip>
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          <span className="mb-1.5 block text-sm">{T('generic.share')}</span>
+          <div className="sharing-buttons flex flex-wrap gap-1">
+            <Button
+              onClick={() =>
+                open(`https://wa.me/?text=${T('generic.share_url')}%20%0D%0A%0D%0A${shared.url}`)
+              }
+              aria-label="Share on Whatsapp"
+              className="!w-10 h-10 flex items-center justify-center !p-0"
+            >
+              <WhatsappIcon className="w-5 h-5" />
+            </Button>
+            <Button
+              onClick={() =>
+                open(
+                  `https://telegram.me/share/url?text=${T('generic.share_url')}&amp;url=${shared.url}`
+                )
+              }
+              aria-label="Share on Telegram"
+              className="!w-10 h-10 flex items-center justify-center !p-0"
+            >
+              <TelegramIcon className="w-5 h-5" />
+            </Button>
+            <Button
+              onClick={() =>
+                // TODO fix this link
+                open(
+                  `mailto:?subject=${T('generic.share_mail_subject')}&body=${T('generic.share_url')}%20%0D%0A%0D%0A${shared.url}`
+                )
+              }
+              aria-label="Share by Email"
+              className="!w-10 h-10 flex items-center justify-center !p-0"
+            >
+              <MailIcon className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </div>
       <StopShare onStop={onStop} T={T} />

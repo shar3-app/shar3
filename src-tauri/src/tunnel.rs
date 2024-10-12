@@ -31,7 +31,7 @@ pub fn start_tunnel(port: u16) -> Result<String, anyhow::Error> {
             Some("5h4r3-secret_2O24"),
         )
         .await?;
-        let remote_url = format!("http://{}.shar3.app", client.remote_port());
+        let remote_url = format!("https://{}.shar3.app", client.remote_port());
         tx.send(remote_url).expect("Failed to send URL");
 
         tokio::select! {

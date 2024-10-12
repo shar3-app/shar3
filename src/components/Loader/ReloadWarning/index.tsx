@@ -1,3 +1,5 @@
+import { relaunch } from '@tauri-apps/plugin-process';
+
 const ReloadWarning = () => (
   <>
     <div data-icon>
@@ -21,7 +23,7 @@ const ReloadWarning = () => (
           // TODO translate
         }
         Looks like something went wrong.{' '}
-        <span className="underline cursor-pointer" onClick={async () => window.location.reload()}>
+        <span className="underline cursor-pointer" onClick={async () => await relaunch()}>
           Click to reload the app.
         </span>
       </div>
