@@ -1,6 +1,6 @@
+import { ThemeProvider } from '@components/ThemeProvider';
 import { TooltipProvider } from '@components/Tooltip';
 import { Locale, Settings } from '@shared';
-import { Flowbite } from 'flowbite-react';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Talkr } from 'talkr';
@@ -24,17 +24,13 @@ try {
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <Flowbite
-      theme={{
-        mode: 'dark'
-      }}
-    >
+    <ThemeProvider>
       <TooltipProvider delayDuration={150}>
         <Talkr languages={{ en, es, de, fr }} defaultLanguage={locale || 'en'}>
           <App />
         </Talkr>
       </TooltipProvider>
-    </Flowbite>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

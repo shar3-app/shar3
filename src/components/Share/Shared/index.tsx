@@ -1,6 +1,6 @@
 import Button from '@components/Button';
+import { useTheme } from '@components/ThemeProvider';
 import { Tooltip } from '@components/Tooltip';
-import { useTheme } from '@hooks';
 import { CopyIcon, FileIcon, FolderIcon, MailIcon, TelegramIcon, WhatsappIcon } from '@icons';
 import { SharePayload, Translator } from '@shared';
 import { open } from '@tauri-apps/plugin-shell';
@@ -37,7 +37,7 @@ const Shared = ({ shared, onStop, T }: SharedProps) => {
             bgColor={'transparent'}
             className="w-full h-full rounded-md cursor-pointer max-w-full"
             onClick={() => copyToast(copyQrToClipboard(qrId, theme), 'generic.qr_copied.loading')}
-            fgColor={theme() === 'dark' ? '#b6c0ce' : '#3a4049'}
+            fgColor={theme === 'dark' ? '#b6c0ce' : '#3a4049'}
           />
         </Tooltip>
       </div>

@@ -1,9 +1,9 @@
-import { ErrorEvent, ThemeMode } from '@shared';
+import { ErrorEvent, Theme } from '@shared';
 import { invoke } from '@tauri-apps/api/core';
 import { svgString2Image } from './base64';
 import { trackError } from './trackError';
 
-export const copyQrToClipboard = (id: string, theme: () => ThemeMode): Promise<string> => {
+export const copyQrToClipboard = (id: string, theme: Theme): Promise<string> => {
   return new Promise((resolve, reject) => {
     const svg = document.getElementById(id);
     if (svg) {
@@ -21,7 +21,7 @@ export const copyQrToClipboard = (id: string, theme: () => ThemeMode): Promise<s
               reject('generic.qr_copied.error');
             }
           },
-          theme() === 'dark' ? '#000' : '#fff'
+          theme === 'dark' ? '#000' : '#fff'
         );
       } catch (error) {
         trackError(ErrorEvent.CopyQR, error);

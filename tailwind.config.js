@@ -5,8 +5,7 @@ module.exports = {
   darkMode: 'class',
   content: [
     resolve(__dirname, './**/*.rs'),
-    resolve(__dirname, './src/**/*.{js,ts,jsx,tsx,html,astro}'),
-    resolve(__dirname, './node_modules/flowbite-react/**/*.{cjs,js}')
+    resolve(__dirname, './src/**/*.{js,ts,jsx,tsx,html,astro}')
   ],
   theme: {
     extend: {
