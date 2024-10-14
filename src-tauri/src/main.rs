@@ -9,10 +9,12 @@ use base64::{engine::general_purpose::STANDARD, Engine};
 use dotenvy::dotenv;
 use image::{load_from_memory_with_format, ImageFormat};
 use once_cell::sync::Lazy;
+use once_cell::sync::OnceCell;
 use serde::Serialize;
 use std::process::Command;
 use std::sync::Arc;
 use std::{env, path::Path};
+use tauri::AppHandle;
 use tokio::sync::Mutex;
 use tokio::task::JoinHandle;
 use tracing::{debug, error, info, Level};
@@ -24,6 +26,12 @@ use tunnel::{kill_tunnel, start_tunnel};
 // Global task storage using Lazy and Mutex
 static SERVER_TASK: Lazy<Arc<Mutex<Option<JoinHandle<()>>>>> =
     Lazy::new(|| Arc::new(Mutex::new(None)));
+
+static APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
+
+fn get_app_handle() -> &'static AppHandle {
+    APP_HANDLE.get().expect("AppHandle not initialized")
+}
 
 async fn stop_server() -> Result<(), String> {
     let mut server_task_lock = SERVER_TASK.lock().await;
@@ -84,11 +92,12 @@ async fn serve(
     let port = get_available_port().unwrap_or(8765);
     let success = Arc::new(Mutex::new(true));
     let path_clone = path.clone();
+    let app_handle = get_app_handle();
 
     let server_task = tokio::spawn({
         let success_clone = Arc::clone(&success);
         async move {
-            if let Err(e) = run_server(path_clone, port, username, password).await {
+            if let Err(e) = run_server(app_handle, path_clone, port, username, password).await {
                 *success_clone.lock().await = false;
                 error!("Error running server: {:?}", e);
             }
@@ -169,6 +178,11 @@ fn main() {
         .expect("Failed to set global default subscriber");
 
     tauri::Builder::default()
+        .setup(|app| {
+            // Initialize the global AppHandle
+            APP_HANDLE.set(app.handle().clone()).unwrap();
+            Ok(())
+        })
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_nosleep::init())

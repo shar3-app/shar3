@@ -1,6 +1,6 @@
 import { trackEvent } from '@aptabase/tauri';
 import { useConnection, useLocalStorage } from '@hooks';
-import { ErrorEvent, Events, LoaderState, LocalStorage, SharePayload } from '@shared';
+import { ErrorEvent, Events, LoaderState, LocalStorage, SharePayload, TrackEvent } from '@shared';
 import { invoke } from '@tauri-apps/api/core';
 import { emit, listen } from '@tauri-apps/api/event';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
@@ -112,7 +112,7 @@ const Share = () => {
         password: hasAuth ? settings?.auth?.password : null
       })
         .then((payload) => {
-          trackEvent('share', {
+          trackEvent(TrackEvent.Share, {
             path
           });
           setIsSharing(true);

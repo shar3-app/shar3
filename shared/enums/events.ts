@@ -9,7 +9,8 @@ export enum Events {
 }
 
 export enum TrackEvent {
-  Error = 'ERROR'
+  Error = 'error',
+  Share = 'share'
 }
 
 export enum ErrorEvent {

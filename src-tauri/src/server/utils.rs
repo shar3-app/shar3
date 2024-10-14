@@ -2,10 +2,13 @@ use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use chrono::{DateTime, Local, Utc};
 use percent_encoding::percent_decode_str;
+use serde_json::json;
 use std::fs::{read_to_string, File};
 use std::io::{self, Error, Read};
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
+use tauri::AppHandle;
+use tauri_plugin_aptabase::EventTracker;
 use tokio_util::io::ReaderStream;
 use warp::hyper::header::{HeaderValue, CONTENT_DISPOSITION, CONTENT_LENGTH};
 use warp::hyper::Body;
@@ -70,7 +73,10 @@ pub fn format_bytes(bytes: u64) -> String {
     }
 }
 
-pub async fn stream_file(file_path: String) -> Result<impl warp::Reply, warp::Rejection> {
+pub async fn stream_file(
+    app: &AppHandle,
+    file_path: String,
+) -> Result<impl warp::Reply, warp::Rejection> {
     let path = PathBuf::from(&file_path);
 
     // Get file metadata to obtain the file size
@@ -97,6 +103,14 @@ pub async fn stream_file(file_path: String) -> Result<impl warp::Reply, warp::Re
     // Set Content-Length header to the size of the file
     let content_length = HeaderValue::from_str(&file_size.to_string())
         .unwrap_or_else(|_| HeaderValue::from_static("0"));
+
+    app.track_event(
+        "download",
+        Some(json!({
+            "file_name": file_name,
+            "size": &file_size.to_string(),
+        })),
+    );
 
     // Create the response and add headers
     let mut response = Response::new(Body::wrap_stream(stream));

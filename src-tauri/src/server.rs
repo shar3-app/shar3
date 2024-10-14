@@ -7,6 +7,8 @@ use serde::Deserialize;
 use serving::render_content;
 use std::convert::Infallible;
 use std::{net::TcpListener, path::PathBuf};
+use tauri::AppHandle;
+use tracing::info;
 use utils::{decode_percent_encoded_path, stream_file};
 use warp::http::header::HeaderValue;
 use warp::http::Response as HttpResponse;
@@ -92,16 +94,21 @@ async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> {
 }
 
 pub async fn run_server(
+    app: &AppHandle,
     path: String,
     port: u16,
     username: Option<String>,
     password: Option<String>,
 ) -> Result<(), Rejection> {
+    let app_handle = app.clone(); // Clone the AppHandle to move into the async block
+
     let download_route = warp::path("d0wnl04d_f1l3")
         .and(warp::query::<DownloadQuery>())
         .and_then(move |query: DownloadQuery| {
             let file_path = query.file_path.clone();
-            async move { stream_file(file_path).await }
+            let app_handle = app_handle.clone(); // Clone again if used in another async block
+
+            async move { stream_file(&app_handle, file_path).await }
         });
 
     let static_files = warp::path::tail().and_then(move |tail: warp::path::Tail| {
