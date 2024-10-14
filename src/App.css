@@ -12,10 +12,13 @@ html {
 }
 
 body {
-  background-color: #f9fafb;
+  background-color: #7f5af0;
   padding: 1.5rem;
 }
 
+html.light body {
+  background-color: #f9fafb;
+}
 html.dark body {
   background-color: #111827;
 }

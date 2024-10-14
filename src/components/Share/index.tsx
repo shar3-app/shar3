@@ -2,7 +2,7 @@ import { trackEvent } from '@aptabase/tauri';
 import { useConnection, useLocalStorage } from '@hooks';
 import { ErrorEvent, Events, LoaderState, LocalStorage, SharePayload } from '@shared';
 import { invoke } from '@tauri-apps/api/core';
-import { emit, listen, TauriEvent } from '@tauri-apps/api/event';
+import { emit, listen } from '@tauri-apps/api/event';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { open } from '@tauri-apps/plugin-dialog';
@@ -23,10 +23,6 @@ const Share = () => {
 
   useEffect(() => {
     const listenShare = listen<string>(Events.Share, ({ payload }) => serve(payload));
-    const listenClose = listen(TauriEvent.WINDOW_CLOSE_REQUESTED, () => {
-      setIsSharing(false);
-      stopSharing();
-    });
     const listenStop = listen(Events.StopSharing, () => {
       setIsSharing(false);
       stopSharing();
@@ -45,7 +41,6 @@ const Share = () => {
       listenShare.then((f) => f());
       listenStop.then((f) => f());
       listenDrop.then((f) => f());
-      listenClose.then((f) => f());
     };
   }, []);
 

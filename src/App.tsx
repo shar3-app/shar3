@@ -5,16 +5,12 @@ import Loader from '@components/Loader';
 import Nav from '@components/Nav';
 import SettingsModal from '@components/Settings';
 import Share from '@components/Share';
+import Splashscreen from '@components/Splashscreen';
 import { Toaster } from 'sonner';
 
 function App() {
-  // TODO splashscreen
   return (
     <>
-      <Toaster position="top-center" closeButton />
-      <Loader />
-      <ContextMenu />
-
       <Nav />
 
       <main className="space-y-6">
@@ -24,6 +20,10 @@ function App() {
 
       <SettingsModal />
       <Joyride />
+      <Toaster position="top-center" closeButton />
+      <Loader />
+      <ContextMenu />
+      <Splashscreen />
     </>
   );
 }
