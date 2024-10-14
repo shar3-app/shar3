@@ -6,12 +6,13 @@ mod tunnel;
 
 use arboard::{Clipboard, ImageData};
 use base64::{engine::general_purpose::STANDARD, Engine};
+use dotenvy::dotenv;
 use image::{load_from_memory_with_format, ImageFormat};
 use once_cell::sync::Lazy;
 use serde::Serialize;
-use std::path::Path;
 use std::process::Command;
 use std::sync::Arc;
+use std::{env, path::Path};
 use tokio::sync::Mutex;
 use tokio::task::JoinHandle;
 use tracing::{debug, error, info, Level};
@@ -155,6 +156,11 @@ fn copy_image_to_clipboard(base64_string: String) -> Result<(), String> {
 }
 
 fn main() {
+    // Load the environment variables from the .env file
+    dotenv().ok();
+
+    let aptabase_key = env::var("APTABASE_KEY").expect("API_KEY is not set in .env file");
+
     let subscriber = FmtSubscriber::builder()
         .with_max_level(Level::DEBUG)
         .finish();
@@ -167,7 +173,7 @@ fn main() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_nosleep::init())
         .plugin(tauri_plugin_store::Builder::new().build())
-        .plugin(tauri_plugin_aptabase::Builder::new("A-EU-5257789286").build())
+        .plugin(tauri_plugin_aptabase::Builder::new(&aptabase_key).build())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
