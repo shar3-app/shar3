@@ -1,7 +1,16 @@
-# Tauri + React + Typescript
+# Shar3
+## WIP project
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+A quick preview of Alpha 0.1:
 
-## Recommended IDE Setup
+<p align="center">
+  <img src="https://github.com/DSGDSR/shar3-app/assets/9610219/b7bb0c57-1b00-488c-915f-d90630d36ca0">
+</p>
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Download
+Prerelease will be soon ready for both Mac and Mac arm64
+<br>
+<p align="center">
+  <img src="https://github.com/DSGDSR/shar3-app/assets/9610219/fc99167a-53de-4863-b388-9b01eb0fe749">
+</p>
+<br><br>
