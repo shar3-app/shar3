@@ -1,5 +1,5 @@
 # Shar3
-## WIP project
+## WIP project and landing page
 
 A quick preview of Alpha 0.1:
 
